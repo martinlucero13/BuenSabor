@@ -1,6 +1,6 @@
 function Prueba() {
     return (
-      <div>Prueba</div>
+      <div>Prueba Funciona</div>
     )
   }
   
