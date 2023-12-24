@@ -1,0 +1,24 @@
+.form{
+    display: grid;
+    place-items: center;
+}
+
+.contenedor{
+    background-color: #333;
+    border-radius: 10px;
+    display: grid;
+    place-items: center;
+    max-width: 50%;
+}
+
+img {
+    max-width: 25%;
+    height: auto;
+}
+
+.img {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+  

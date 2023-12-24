@@ -2,7 +2,7 @@
 
 import { signIn, useSession } from "next-auth/react";
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { Button } from "react-bootstrap";
+import './estilo.css'
 
 function Login() {
   const { data: session } = useSession();
@@ -13,45 +13,32 @@ function Login() {
 
 
   return (
-    <div>
-        <div>
-        <img
-            src="/login-icon.svg"
-            alt="login-icon"
-        />
+    <form className="form">
+    <div className="contenedor">
+        <div className="img">
+            <img src="/login-icon.svg" alt="login-icon"/>
         </div>
         <div>Login</div>
         <div>
-            <div>
-                <img
-                src="/username-icon.svg"
-                alt="username-icon"/>
+            <div className="img">
+                <img src="/username-icon.svg" alt="username-icon"/>
             </div>
-            <input
-                type="text"
-                placeholder="Username"
-            />
+            <input type="text" placeholder="Username"/>
         </div>
         <div>
-            <div>
-                <img
-                src="/password-icon.svg"
-                alt="password-icon"
-                />
+            <div className="img">
+                <img src="/password-icon.svg" alt="password-icon"/>
             </div>
-            <input
-                type="password"
-                placeholder="Password"
-            />
+            <input type="password" placeholder="Password"/>
         </div>
         <div>
             <div>
                 <a href="#">Forgot your password?</a>
             </div>
         </div>
-        <div>
+        <button type="button" className="btn btn-primary">
             Login
-        </div>
+        </button>
         <div>
             <div>Don't have an account?</div>
             <a href="#">Register</a>
@@ -66,15 +53,16 @@ function Login() {
                 src="google-icon.svg"
                 alt="google-icon"
             />
-            <Button
+            <button
                 type="button" className="btn btn-primary"
                 onClick={handleGoogleSignIn}
                 
                 >
                 Sign In with Google
-            </Button>
+            </button>
         </div>
     </div>
+    </form>
   );
 }
 
