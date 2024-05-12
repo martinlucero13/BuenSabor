@@ -17,15 +17,15 @@ const INITIAL_STATE = {
 
 export default function TablaPedidosCajero() {
     const { user } = useContext(UserContext)
-    const [loading, setLoading] = useState(true)
+    const [loading, setLoading] = useState(false)
     const [dataTable, setDataTable] = useState([])
     const navigate = useRouter()
     const [formData, setFormData] = useState(INITIAL_STATE)
     const [disabledSend, setDisabledSend] = useState(true)
 
-    useEffect(async () => {
+    /*useEffect(async () => {
         handleLoad()
-    }, [])
+    }, [])*/
 
     async function handleLoad() {
         setLoading(true)

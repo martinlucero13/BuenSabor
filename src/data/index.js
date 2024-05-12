@@ -128,7 +128,7 @@ export const listPagesCocinero = [
             {
                 link: "/pedidosCocina",
                 name: "Pedidos Cocina",
-                IconName: "FilePerson"
+                IconName: "EggFried"
             },
         ]
     },
