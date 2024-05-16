@@ -171,7 +171,7 @@ export default function TablaPedidos() {
                     expandableRowsComponent={ExpandedComponent}
                     pagination
                     paginationComponentOptions={paginationOptions}
-                    defaultSortFieldId={1}
+                    defaultSortFieldId={3}
                     defaultSortAsc={false}
                     progressPending={loading}
                     progressComponent={<Loading message='Cargando pedidos...' fontSize='20' />}

@@ -82,18 +82,18 @@ export const listPagesAdministrador = [
         title: "Estadísticas",
         iconData: [
             {
-                link: "/estadisticasclientes",
+                link: "/estadisticasClientes",
                 name: "Estadísticas Clientes",
                 IconName: "FileBarGraphFill"
             },
             {
-                link: "/estadisticasproducto",
+                link: "/estadisticasProductos",
                 name: "Estadísticas Productos",
                 IconName: "FileEarmarkBarGraphFill"
             },
             {
-                link: "/estadisticasmonetario",
-                name: "Estadísticas Monetario",
+                link: "/estadisticasContable",
+                name: "Estadísticas Contable",
                 IconName: "CashCoin"
             },
         ]
@@ -102,7 +102,7 @@ export const listPagesAdministrador = [
         title: "Contable",
         iconData: [
             {
-                link: "/facturas",
+                link: "/pedidosAdmin",
                 name: "Facturas",
                 IconName: "CurrencyDollar"
             },
