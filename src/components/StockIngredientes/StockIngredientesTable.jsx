@@ -1,13 +1,14 @@
 import { useContext, useEffect, useState } from "react"
 import DataTable from "react-data-table-component"
 import dayjs from "dayjs"
-import { Trash3, PencilSquare, X, Check } from "react-bootstrap-icons"
+import { Trash3, PencilSquare, BasketFill, Check } from "react-bootstrap-icons"
 import StockIngredientesForm from "./StockIngredientesForm"
 import StockIngredientesEdit from "./StockIngredientesEdit"
+import StockIngredientesComprar from "./StockIngredientesComprar"
 import UserContext from "../../context/userContext"
 import api from "../../Services/apiServices"
 import Loading from "../Loading/Loading"
-const Columns = (handleDelete, handleEdit) => (
+const Columns = (handleDelete, handleEdit, handleComprar) => (
     [
         {
             name: 'Nombre',
@@ -69,12 +70,27 @@ const Columns = (handleDelete, handleEdit) => (
             center: true,
         },
         {
-            name: 'EDITAR',
+            name: 'Editar',
             center: true,
             cell: (row) => {
                 return (
                     <div onClick={() => handleEdit(row)}>
                         <PencilSquare
+                            style={{ color: 'black', cursor: 'pointer' }}
+                            width={30}
+                            height={30}
+                        />
+                    </div>
+                );
+            }
+        },
+        {
+            name: 'Comprar',
+            center: true,
+            cell: (row) => {
+                return (
+                    <div onClick={() => handleComprar(row)}>
+                        <BasketFill
                             style={{ color: 'black', cursor: 'pointer' }}
                             width={30}
                             height={30}
@@ -107,6 +123,7 @@ export default function StockIngredientesTable() {
     const [dataTable, setDataTable] = useState([])
     const [show, setShow] = useState(false)
     const [showEdit, setEdit] = useState(false)
+    const [showComprar, setComprar] = useState(false)
     const [loading, setLoading] = useState(false)
     const [datoRow, setdatoRow] = useState()
 
@@ -155,6 +172,14 @@ export default function StockIngredientesTable() {
         }
     }
 
+    async function handleComprar(row) {
+        setdatoRow(row)
+        setComprar(!showComprar)
+        if (showComprar) {
+            handleLoad()
+        }
+    }
+
     const noData = <strong style={{ color: 'red', textAlign: 'center' }}>No se encontraron ingredientes</strong>
 
     return (
@@ -168,26 +193,31 @@ export default function StockIngredientesTable() {
                             handleShow={handleEdit}
                             datoRow={datoRow}
                         />
-                        : <>
-                            <div>
-                                <header>
-                                    <h1>Stock Ingredientes</h1>
-                                    <button onClick={handleShow}>Nuevo</button>
-                                </header>
-                            </div>
-                            <div>
-                                <DataTable
-                                    columns={Columns(handleDelete, handleEdit)}
-                                    data={dataTable}
-                                    progressPending={loading}
-                                    progressComponent={<Loading message='Cargando datos...' marginLeft={20} />}
-                                    noDataComponent={noData}
-                                    highlightOnHover
-                                    fixedHeader={true}
-                                    resizable={true}
-                                />
-                            </div>
-                        </>
+                        : showComprar
+                            ? <StockIngredientesComprar
+                                handleShow={handleComprar}
+                                datoRow={datoRow}
+                            />
+                            : <>
+                                <div>
+                                    <header>
+                                        <h1>Stock Ingredientes</h1>
+                                        <button onClick={handleShow}>Nuevo</button>
+                                    </header>
+                                </div>
+                                <div>
+                                    <DataTable
+                                        columns={Columns(handleDelete, handleEdit, handleComprar)}
+                                        data={dataTable}
+                                        progressPending={loading}
+                                        progressComponent={<Loading message='Cargando datos...' marginLeft={20} />}
+                                        noDataComponent={noData}
+                                        highlightOnHover
+                                        fixedHeader={true}
+                                        resizable={true}
+                                    />
+                                </div>
+                            </>
             }
             <style jsx>{`
                 header {
