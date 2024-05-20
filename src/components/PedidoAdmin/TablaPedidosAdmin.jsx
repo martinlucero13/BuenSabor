@@ -9,13 +9,14 @@ import Cookies from "js-cookie";
 import { getDataFormat } from './Helpers'
 import dayjs from "dayjs";
 import { PrinterFill } from "react-bootstrap-icons";
+import { PDFFactura } from '../Print/PDFFactura';
 
 const INITIAL_STATE = {
     dateDesde: '',
     dateHasta: '',
 }
 
-export default function TablaPedidosAdmin() {
+export const TablaPedidosAdmin = ({ setPrint }) => {
     const { user } = useContext(UserContext)
     const [loading, setLoading] = useState(false)
     const [dataTable, setDataTable] = useState([])
@@ -68,6 +69,13 @@ export default function TablaPedidosAdmin() {
             return
         }
         setDisabledSend(false)
+    }
+
+    async function Imprimir(row) {
+        setPrint(true)
+        const doc = PDFFactura(row)
+        doc.save(`Factura-N°${row.nrofac}.pdf`)
+        setPrint(false)
     }
 
     const columnsTable = [
@@ -168,7 +176,7 @@ export default function TablaPedidosAdmin() {
             grow: 0.3,
             center: true,
             format: (row) => {
-                return <div onClick={() => handleCancel(row)}>
+                return <div onClick={() => Imprimir(row)}>
                     <PrinterFill style={{ color: 'grey', width: '25px', height: '25px', cursor: 'pointer' }} />
                 </div>
             }
