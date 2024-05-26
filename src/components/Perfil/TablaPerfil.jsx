@@ -60,11 +60,11 @@ export default function TablaPerfil() {
                                 <div><h3>Usuario: </h3><h5>{data.length > 0 ? data[0].usuario : ''}</h5></div>
                                 <div><h3>Nombre: </h3><h5>{data.length > 0 ? data[0].nombre : ''}</h5></div>
                                 <div><h3>Apellido: </h3><h5>{data.length > 0 ? data[0].apellido : ''}</h5></div>
-                                <div><h3>telefono: </h3><h5>{data.length > 0 ? data[0].telefono : ''}</h5></div>
-                                <div><h3>email: </h3><h5>{data.length > 0 ? data[0].email : ''}</h5></div>
-                                <div><h3>calle: </h3><h5>{data.length > 0 ? data[0].calle : ''}</h5></div>
-                                <div><h3>numero: </h3><h5>{data.length > 0 ? data[0].numero : ''}</h5></div>
-                                <div><h3>localidad: </h3><h5>{data.length > 0 ? data[0].localidad : ''}</h5></div>
+                                <div><h3>Telefono: </h3><h5>{data.length > 0 ? data[0].telefono : ''}</h5></div>
+                                <div><h3>Email: </h3><h5>{data.length > 0 ? data[0].email : ''}</h5></div>
+                                <div><h3>Calle: </h3><h5>{data.length > 0 ? data[0].calle : ''}</h5></div>
+                                <div><h3>Numero: </h3><h5>{data.length > 0 ? data[0].numero : ''}</h5></div>
+                                <div><h3>Localidad: </h3><h5>{data.length > 0 ? data[0].localidad : ''}</h5></div>
                             </div>
                         </div>
                     </>

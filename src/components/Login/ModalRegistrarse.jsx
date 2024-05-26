@@ -1,18 +1,18 @@
 import dayjs from "dayjs"
 import { useContext, useState } from "react"
 import { Modal } from "react-bootstrap"
-import apiFeco from "../../Services/apiServices"
+import api from "../../Services/apiServices"
 import Loading from '../Loading/Loading'
 
 
-export default function ModalResetContraseña({ show, setShow }) {
+export default function ModalRegistrarse({ show, setShowRegistr }) {
     const [datos, setDatos] = useState({})
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState('')
 
     async function handleSubmit(e) {
         e.preventDefault()
-        if (Object.keys(datos).length < 3) {
+        if (Object.keys(datos).length < 10) {
             setError('Los campos no pueden estar vacios')
             return
         }
@@ -22,35 +22,42 @@ export default function ModalResetContraseña({ show, setShow }) {
     }
 
     async function verificarDatos() {
-        const { data: datosUser } = await apiFeco.post('user/dataUser', { usuario: datos.usuario })
-        const { usuario, email, telefono } = datosUser.data[0]
+        //Tengo que hacer una llamada a la api para para chequear 
+        //que el usuario que esta ingresando no exita y que tampoco exita el mail
+        const { data: datosUser } = await api.post('user/validaUsuario', { usuario: datos.usuario })
+        //const { cantUsu/*, fecha*/ } = datosUser.data[0]
 
-        if (String(usuario) === datos.usuario && String(email) === datos.mail && Number(telefono) == datos.telefono) {
-            reestablecerContraseña(usuario, telefono)
+        if (datos.clave === datos.repclave) {
+            if (datosUser.data[0].cantUsu == 0) {
+                crearNuevoUsuario()
+            }
+            else {
+                setError('Ese Usuario ya existe')
+                setLoading(false)
+            }
         } else {
-            setError('datos incorrectos')
+            setError('Clave invalida')
             setLoading(false)
         }
     }
 
-    async function reestablecerContraseña(usuario, telefono) {
+    async function crearNuevoUsuario() {
         try {
-            const { data: cambioContraseña } = await apiFeco.post('user/resetClave', { usuario, telefono })
-            console.log(cambioContraseña.data)
-            if (cambioContraseña.statusCode === 200) {
-                alert('Se establecio la contraseña, la nueva clave es: ' + cambioContraseña.data)
+            const { data: clientes } = await api.post('user/createUsuario', { fromData: datos })
+            if (clientes.statusCode === 200) {
+                alert('Se creo el usuario correctamente, ya puede iniciar sesión')
             } else {
-                alert('No se pudo reestablecer la contraseña, intente nuevamente mas tarde')
+                alert('No se pudo crear el usuario, intente nuevamente mas tarde')
             }
         } catch (error) {
             console.log(error)
         }
         setLoading(false)
-        setShow(false)
+        setShowRegistr(false)
     }
 
     function cancel() {
-        setShow(false)
+        setShowRegistr(false)
         setError('')
     }
 
@@ -67,8 +74,9 @@ export default function ModalResetContraseña({ show, setShow }) {
                 centered
             >
                 <Modal.Body>
-                    <h1>Reestablecer contraseña</h1>
+                    <h1>Registrarse</h1>
                     <main className='formulario'>
+
                         <div className="form-floating">
                             <input
                                 type="text"
@@ -77,17 +85,47 @@ export default function ModalResetContraseña({ show, setShow }) {
                                 name='usuario'
                                 onChange={handleChange}
                             />
-                            <label htmlFor="usuario">Usuario</label>
+                            <label htmlFor="usu">Usuario</label>
+                        </div>
+                        <div className="form-floating">
+                            <input
+                                type="password"
+                                className="form-control mb-1"
+                                placeholder="Clave"
+                                name='clave'
+                                onChange={handleChange}
+                            />
+                            <label htmlFor="clav">Clave</label>
+                        </div>
+                        <div className="form-floating">
+                            <input
+                                type="password"
+                                className="form-control mb-1"
+                                placeholder="Repetir Clave"
+                                name='repclave'
+                                onChange={handleChange}
+                            />
+                            <label htmlFor="repclav">Repetir Clave</label>
                         </div>
                         <div className="form-floating">
                             <input
                                 type="text"
-                                className="form-control mb-1"
-                                placeholder="Mail"
-                                name='mail'
+                                className="form-control"
+                                placeholder="Nombre"
+                                name='nombre'
                                 onChange={handleChange}
                             />
-                            <label htmlFor="mail">Mail</label>
+                            <label htmlFor="nom">Nombre</label>
+                        </div>
+                        <div className="form-floating">
+                            <input
+                                type="text"
+                                className="form-control"
+                                placeholder="Apellido"
+                                name='apellido'
+                                onChange={handleChange}
+                            />
+                            <label htmlFor="ape">Apellido</label>
                         </div>
                         <div className="form-floating">
                             <input
@@ -97,31 +135,49 @@ export default function ModalResetContraseña({ show, setShow }) {
                                 name='telefono'
                                 onChange={handleChange}
                             />
-                            <label htmlFor="telefono">Telefono</label>
+                            <label htmlFor="tel">Telefono</label>
                         </div>
-
+                        <div className="form-floating">
+                            <input
+                                type="text"
+                                className="form-control mb-1"
+                                placeholder="Mail"
+                                name='mail'
+                                onChange={handleChange}
+                            />
+                            <label htmlFor="mai">Mail</label>
+                        </div>
+                        <div className="form-floating">
+                            <input
+                                type="text"
+                                className="form-control mb-1"
+                                placeholder="Calle"
+                                name='calle'
+                                onChange={handleChange}
+                            />
+                            <label htmlFor="call">Calle</label>
+                        </div>
+                        <div className="form-floating">
+                            <input
+                                type="number"
+                                className="form-control mb-1"
+                                placeholder="Numero"
+                                name='numero'
+                                onChange={handleChange}
+                            />
+                            <label htmlFor="num">Numero</label>
+                        </div>
+                        <div className="form-floating">
+                            <input
+                                type="text"
+                                className="form-control mb-1"
+                                placeholder="Localidad"
+                                name='localidad'
+                                onChange={handleChange}
+                            />
+                            <label htmlFor="local">Localidad</label>
+                        </div>
                         {/*<div className="form-floating">
-                            <input
-                                type="text"
-                                className="form-control"
-                                placeholder="Nombre"
-                                name='nombre'
-                                onChange={handleChange}
-                            />
-                            <label htmlFor="nombre">Nombre</label>
-                        </div>
-
-                        <div className="form-floating">
-                            <input
-                                type="text"
-                                className="form-control"
-                                placeholder="Apellido"
-                                name='apellido'
-                                onChange={handleChange}
-                            />
-                            <label htmlFor="apellido">Apellido</label>
-                        </div>
-                        <div className="form-floating">
                             <input
                                 type="date"
                                 className="form-control"
@@ -132,7 +188,7 @@ export default function ModalResetContraseña({ show, setShow }) {
                             <label htmlFor="repcontraseña">Fecha nacimiento</label>
                         </div>*/}
                         <button disabled={loading} onClick={handleSubmit} className="w-100 btn btn-lg btn-light mt-2" id='buttonLogin'>
-                            REESTABLECER
+                            REGISTRARSE
                         </button>
                         <button onClick={cancel} className="w-100 btn btn-lg btn-light mt-2" id='buttonLogin'>
                             CANCELAR
@@ -142,7 +198,7 @@ export default function ModalResetContraseña({ show, setShow }) {
                     {
                         loading &&
                         <div>
-                            <Loading message='Cambiando Contraseña...' />
+                            <Loading message='Creando nuevo usuario...' />
                         </div>
                     }
                 </Modal.Body>

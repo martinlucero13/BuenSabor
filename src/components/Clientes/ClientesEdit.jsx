@@ -89,7 +89,7 @@ export default function ClientesEdit({ handleShow, datoRow }) {
                     <h2>Editar Cliente</h2>
                     <section className={transition ? "element-hidden" : "element"}>
                         <label>Usuario</label>
-                        <textarea placeholder="usuario.example" maxLength={200} onChange={handleChangeForm} value={formData.usuario} type="text" name="usuario" />
+                        <textarea placeholder="usuario.example" maxLength={200} value={formData.usuario} type="text" name="usuario" />
                     </section>
                     <section className={transition ? "element-hidden" : "element"}>
                         <label>Clave</label>

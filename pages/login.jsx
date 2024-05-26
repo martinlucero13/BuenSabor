@@ -2,6 +2,7 @@ import { useEffect, useState, useContext } from 'react'
 import { useRouter } from 'next/router'
 import useUser from '../src/Hooks/useUser'
 import ModalResetContraseña from '../src/components/Login/ModalResetContraseña'
+import ModalRegistrarse from '../src/components/Login/ModalRegistrarse'
 import FormLogin from '../src/components/Login/FormLogin'
 import Image from 'next/image'
 
@@ -10,6 +11,7 @@ export default function Login() {
   const [password, setPassword] = useState("")
   const [datosIngresados, setDatosIngresados] = useState(false)
   const [show, setShow] = useState(false)
+  const [showRegistr, setShowRegistr] = useState(false)
   const navigate = useRouter()
   const { login, hasLoginError, hasNotLogin, isLoginLoading, isLogged, blockUser } = useUser()
 
@@ -56,13 +58,15 @@ export default function Login() {
             handleSubmit={handleSubmit}
             isLoginLoading={isLoginLoading}
             setShow={setShow}
+            setShowRegistr={setShowRegistr}
           />
         }
       </div>
       <ModalResetContraseña show={show} setShow={setShow} />
+      <ModalRegistrarse show={showRegistr} setShowRegistr={setShowRegistr} />
       {isLoginLoading && <p className='verificar'>Verificando datos ingresados</p>}
       <div className='Login'>
-        {datosIngresados && <strong>Ingrese Legajo y Contraseña</strong>}
+        {datosIngresados && <strong>Ingrese Usuario y Contraseña</strong>}
         {hasNotLogin && <strong>Datos invalidos</strong>}
         {hasLoginError && <strong>Error al iniciar sesión</strong>}
         {blockUser && <strong style={{ fontSize: '25px' }}>El usuario esta bloqueado</strong>}

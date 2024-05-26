@@ -55,7 +55,7 @@ const Columns = (handleDelete, handleEdit) => (
                 );
             }
         },
-        {
+        /*{
             name: 'Eliminar',
             center: true,
             cell: (row) => {
@@ -70,7 +70,7 @@ const Columns = (handleDelete, handleEdit) => (
                     />
                 </div>
             }
-        },
+        },*/
     ]
 )
 

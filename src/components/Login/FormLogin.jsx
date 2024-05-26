@@ -1,6 +1,6 @@
 
 
-export default function FormLogin({ username, password, handleSubmit, setPassword, setUsername, setShow, isLoginLoading }) {
+export default function FormLogin({ username, password, handleSubmit, setPassword, setUsername, setShow, setShowRegistr, isLoginLoading }) {
 
 
     return (
@@ -36,7 +36,7 @@ export default function FormLogin({ username, password, handleSubmit, setPasswor
 
             </form>
             <h6 onClick={() => setShow(true)}>¿Olvidaste tu contraseña?</h6>
-            <h6 onClick={() => setShow(true)}>Registrarse</h6>
+            <h6 onClick={() => setShowRegistr(true)}>Registrarse</h6>
         </>
     )
 }
