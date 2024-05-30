@@ -1,13 +1,14 @@
 import { useContext, useEffect, useState } from "react"
 import DataTable from "react-data-table-component"
 import dayjs from "dayjs"
-import { Trash3, PencilSquare, X, Check } from "react-bootstrap-icons"
+import { Trash3, PencilSquare, CloudUpload, X, Check } from "react-bootstrap-icons"
 import RubrosProductosForm from "./RubrosProductosForm"
 import RubrosProductosEdit from "./RubrosProductosEdit"
+import RubroImagen from "./RubroImagen"
 import UserContext from "../../context/userContext"
 import api from "../../Services/apiServices"
 import Loading from "../Loading/Loading"
-const Columns = (handleDelete, handleEdit) => (
+const Columns = (handleDelete, handleEdit, handleCargarImagen) => (
     [
         {
             name: 'Nro Ingrediente',
@@ -55,6 +56,21 @@ const Columns = (handleDelete, handleEdit) => (
                 );
             }
         },
+        {
+            name: 'IMAGEN',
+            center: true,
+            cell: (row) => {
+                return (
+                    <div onClick={() => handleCargarImagen(row)}>
+                        <CloudUpload
+                            style={{ color: 'black', cursor: 'pointer' }}
+                            width={30}
+                            height={30}
+                        />
+                    </div>
+                );
+            }
+        },
         /*{
             name: 'Eliminar',
             center: true,
@@ -79,6 +95,7 @@ export default function RubrosProductosTable() {
     const [dataTable, setDataTable] = useState([])
     const [show, setShow] = useState(false)
     const [showEdit, setEdit] = useState(false)
+    const [showCargarImg, setCargarImg] = useState(false)
     const [loading, setLoading] = useState(false)
     const [datoRow, setdatoRow] = useState()
 
@@ -127,6 +144,14 @@ export default function RubrosProductosTable() {
         }
     }
 
+    async function handleCargarImagen(row) {
+        setdatoRow(row)
+        setCargarImg(!showCargarImg)
+        if (showCargarImg) {
+            handleLoad()
+        }
+    }
+
     const noData = <strong style={{ color: 'red', textAlign: 'center' }}>No se encontraron productos</strong>
 
     return (
@@ -140,26 +165,31 @@ export default function RubrosProductosTable() {
                             handleShow={handleEdit}
                             datoRow={datoRow}
                         />
-                        : <>
-                            <div>
-                                <header>
-                                    <h1>Rubro Productos</h1>
-                                    <button onClick={handleShow}>Nuevo</button>
-                                </header>
-                            </div>
-                            <div>
-                                <DataTable
-                                    columns={Columns(handleDelete, handleEdit)}
-                                    data={dataTable}
-                                    progressPending={loading}
-                                    progressComponent={<Loading message='Cargando datos...' marginLeft={20} />}
-                                    noDataComponent={noData}
-                                    highlightOnHover
-                                    fixedHeader={true}
-                                    resizable={true}
-                                />
-                            </div>
-                        </>
+                        : showCargarImg
+                            ? <RubroImagen
+                                handleShow={handleCargarImagen}
+                                datoRow={datoRow}
+                            />
+                            : <>
+                                <div>
+                                    <header>
+                                        <h1>Rubro Productos</h1>
+                                        <button onClick={handleShow}>Nuevo</button>
+                                    </header>
+                                </div>
+                                <div>
+                                    <DataTable
+                                        columns={Columns(handleDelete, handleEdit, handleCargarImagen)}
+                                        data={dataTable}
+                                        progressPending={loading}
+                                        progressComponent={<Loading message='Cargando datos...' marginLeft={20} />}
+                                        noDataComponent={noData}
+                                        highlightOnHover
+                                        fixedHeader={true}
+                                        resizable={true}
+                                    />
+                                </div>
+                            </>
             }
             <style jsx>{`
                 header {

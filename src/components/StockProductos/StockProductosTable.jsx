@@ -1,14 +1,15 @@
 import { useContext, useEffect, useState } from "react"
 import DataTable from "react-data-table-component"
 import dayjs from "dayjs"
-import { Trash3, PencilSquare, X, Check } from "react-bootstrap-icons"
+import { Trash3, PencilSquare, CloudUpload, X, Check } from "react-bootstrap-icons"
 import StockProductosForm from "./StockProductosForm"
 import StockProductosEdit from "./StockProductosEdit"
 import StockProductosIngredientesTable from "./StockProductosIngredientesTable"
 import UserContext from "../../context/userContext"
 import api from "../../Services/apiServices"
 import Loading from "../Loading/Loading"
-const Columns = (handleDelete, handleEdit, handleIngredientes) => (
+import ProductoImagen from "./ProductoImagen"
+const Columns = (handleDelete, handleEdit, handleIngredientes, handleCargarImagen) => (
     [
         {
             name: 'Rubro',
@@ -83,6 +84,21 @@ const Columns = (handleDelete, handleEdit, handleIngredientes) => (
             }
         },
         {
+            name: 'IMAGEN',
+            center: true,
+            cell: (row) => {
+                return (
+                    <div onClick={() => handleCargarImagen(row)}>
+                        <CloudUpload
+                            style={{ color: 'black', cursor: 'pointer' }}
+                            width={30}
+                            height={30}
+                        />
+                    </div>
+                );
+            }
+        },
+        {
             name: 'Eliminar',
             center: true,
             cell: (row) => {
@@ -107,6 +123,7 @@ export default function StockProductosTable() {
     const [show, setShow] = useState(false)
     const [showEdit, setEdit] = useState(false)
     const [showIngre, setIngre] = useState(false)
+    const [showCargarImg, setCargarImg] = useState(false)
     const [loading, setLoading] = useState(false)
     const [datoRow, setdatoRow] = useState()
 
@@ -163,6 +180,14 @@ export default function StockProductosTable() {
         }
     }
 
+    async function handleCargarImagen(row) {
+        setdatoRow(row)
+        setCargarImg(!showCargarImg)
+        if (showCargarImg) {
+            handleLoad()
+        }
+    }
+
     const noData = <strong style={{ color: 'red', textAlign: 'center' }}>No se encontraron productos</strong>
 
     return (
@@ -179,26 +204,31 @@ export default function StockProductosTable() {
                             ? <StockProductosIngredientesTable
                                 handleShowTable={handleIngredientes}
                                 datoRow={datoRow}
-                            /> : <>
-                                <div>
-                                    <header>
-                                        <h1>Stock Productos</h1>
-                                        <button onClick={handleShow}>Nuevo</button>
-                                    </header>
-                                </div>
-                                <div>
-                                    <DataTable
-                                        columns={Columns(handleDelete, handleEdit, handleIngredientes)}
-                                        data={dataTable}
-                                        progressPending={loading}
-                                        progressComponent={<Loading message='Cargando datos...' marginLeft={20} />}
-                                        noDataComponent={noData}
-                                        highlightOnHover
-                                        fixedHeader={true}
-                                        resizable={true}
-                                    />
-                                </div>
-                            </>
+                            /> : showCargarImg
+                                ? <ProductoImagen
+                                    handleShow={handleCargarImagen}
+                                    datoRow={datoRow}
+                                />
+                                : <>
+                                    <div>
+                                        <header>
+                                            <h1>Stock Productos</h1>
+                                            <button onClick={handleShow}>Nuevo</button>
+                                        </header>
+                                    </div>
+                                    <div>
+                                        <DataTable
+                                            columns={Columns(handleDelete, handleEdit, handleIngredientes, handleCargarImagen)}
+                                            data={dataTable}
+                                            progressPending={loading}
+                                            progressComponent={<Loading message='Cargando datos...' marginLeft={20} />}
+                                            noDataComponent={noData}
+                                            highlightOnHover
+                                            fixedHeader={true}
+                                            resizable={true}
+                                        />
+                                    </div>
+                                </>
             }
             <style jsx>{`
                 header {
