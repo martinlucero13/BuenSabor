@@ -3,6 +3,7 @@ import { useRouter } from 'next/router'
 import useUser from '../src/Hooks/useUser'
 import ModalResetContraseña from '../src/components/Login/ModalResetContraseña'
 import ModalRegistrarse from '../src/components/Login/ModalRegistrarse'
+import BtnGoogle from '../src/components/Login/BtnGoogle'
 import FormLogin from '../src/components/Login/FormLogin'
 import Image from 'next/image'
 
@@ -50,16 +51,20 @@ export default function Login() {
           </section>
         </div>
         {!isLoginLoading &&
-          <FormLogin
-            password={password}
-            setPassword={setPassword}
-            username={username}
-            setUsername={setUsername}
-            handleSubmit={handleSubmit}
-            isLoginLoading={isLoginLoading}
-            setShow={setShow}
-            setShowRegistr={setShowRegistr}
-          />
+          <>
+
+            <FormLogin
+              password={password}
+              setPassword={setPassword}
+              username={username}
+              setUsername={setUsername}
+              handleSubmit={handleSubmit}
+              isLoginLoading={isLoginLoading}
+              setShow={setShow}
+              setShowRegistr={setShowRegistr}
+            />
+            <BtnGoogle />
+          </>
         }
       </div>
       <ModalResetContraseña show={show} setShow={setShow} />
@@ -164,6 +169,15 @@ export default function Login() {
             }
 
             #buttonLogin:hover{
+              color: black;
+            }
+
+            #buttonGoogle {
+              background-color: rgb(189, 15, 151);
+              color: white;
+            }
+
+            #buttonGoogle:hover{
               color: black;
             }
             

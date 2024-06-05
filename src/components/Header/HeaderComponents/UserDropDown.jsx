@@ -1,12 +1,26 @@
 import useUser from "../../../Hooks/useUser"
 import { BoxArrowRight, LockFill, FileEarmarkPersonFill } from 'react-bootstrap-icons';
 import Router from "next/router";
-
+import { useSession, signOut } from 'next-auth/react';
 export default function UserDropDown({ setCambioContraseña }) {
     const { logout } = useUser()
+    const { data: session } = useSession();
 
-    function logOut() {
+    async function logOut() {
+        // Cierra la sesión local
+        await signOut({ redirect: false, callbackUrl: '/' });
+
+        // Si el usuario inició sesión con Google, cierra la sesión de Google también
+        if (session?.provider === 'google') {
+            const auth2 = window.gapi.auth2.getAuthInstance();
+            if (auth2 != null) {
+                auth2.signOut().then(auth2.disconnect);
+            }
+        }
+
         logout()
+
+        Router.push('/login');
     }
 
     function irPerfil() {

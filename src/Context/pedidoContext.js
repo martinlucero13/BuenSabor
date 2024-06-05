@@ -24,7 +24,8 @@ export function PedidoContextPorvider({ children }) {
     function takeUrl() {
         const URLactual = window.location;
         if (URLactual.href.includes(':4431') || URLactual.href.includes('?')) {
-            navigate.push('https://buen.sabor.com/login')
+            //navigate.push('https://buen.sabor.com/login')
+            //navigate.push('http://localhost:4000/login')
         }
     }
 

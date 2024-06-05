@@ -4,6 +4,7 @@ import UserContext from "../../../context/userContext"
 import useUser from "../../../Hooks/useUser"
 import apiFeco from "../../../Services/apiServices"
 import Loading from '../../Loading/Loading'
+import { useSession, signOut } from 'next-auth/react';
 
 
 export default function UseModalCambioContraseña({ show, setShow, title, cambioContraseña, setCambioContraseña }) {
@@ -14,10 +15,11 @@ export default function UseModalCambioContraseña({ show, setShow, title, cambio
     const [loading, setLoading] = useState(false)
     const [disabled, setDisabled] = useState(false)
     const [error, setError] = useState('')
+    const { data: session } = useSession();
 
     async function handleSubmit(e) {
         e.preventDefault()
-        if([contraseña, contraseñaRep].includes('')){
+        if ([contraseña, contraseñaRep].includes('')) {
             setError('Las contraseñas no deben estar vacias')
             return
         }
@@ -38,6 +40,16 @@ export default function UseModalCambioContraseña({ show, setShow, title, cambio
             alert('Se cambio la contraseña, vuelva a iniciar sesión con la nueva contraseña')
         }
         setLoading(false)
+        // Cierra la sesión local
+        await signOut({ redirect: false, callbackUrl: '/' });
+
+        // Si el usuario inició sesión con Google, cierra la sesión de Google también
+        if (session?.provider === 'google') {
+            const auth2 = window.gapi.auth2.getAuthInstance();
+            if (auth2 != null) {
+                auth2.signOut().then(auth2.disconnect);
+            }
+        }
         logout()
         setShow(false)
     }

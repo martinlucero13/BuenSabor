@@ -1,69 +1,101 @@
-import dayjs from "dayjs"
-import { useContext, useState } from "react"
-import { Modal } from "react-bootstrap"
-import api from "../../Services/apiServices"
-import Loading from '../Loading/Loading'
-
+import { useEffect, useState } from 'react';
+import { Modal } from "react-bootstrap";
+import { signIn, useSession } from "next-auth/react";
+import useUser from '../../Hooks/useUser';
+import { useRouter } from 'next/router';
+import api from "../../Services/apiServices";
+import Loading from '../Loading/Loading';
 
 export default function ModalRegistrarse({ show, setShowRegistr }) {
-    const [datos, setDatos] = useState({})
-    const [loading, setLoading] = useState(false)
-    const [error, setError] = useState('')
+    const [datos, setDatos] = useState({});
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState('');
+    const { login, hasLoginError, hasNotLogin, isLoginLoading, isLogged, blockUser } = useUser();
+    const { data: session, status } = useSession();
+    const navigate = useRouter();
+
+    useEffect(() => {
+        if (isLogged) navigate.push('/home');
+    }, [isLogged, navigate]);
+
+    useEffect(() => {
+        if (session) {
+            // Aquí puedes manejar la lógica adicional después de que el usuario inicie sesión con Google
+            handleGoogleLogin(session);
+        }
+    }, [session]);
 
     async function handleSubmit(e) {
-        e.preventDefault()
+        e.preventDefault();
         if (Object.keys(datos).length < 10) {
-            setError('Los campos no pueden estar vacios')
-            return
+            setError('Los campos no pueden estar vacios');
+            return;
         }
-        setError('')
-        setLoading(true)
-        verificarDatos()
+        setError('');
+        setLoading(true);
+        verificarDatos();
+    }
+
+    async function iniciarGoogle() {
+        signIn("google");
+    }
+    function obtenerParteAntesDelArroba(email) {
+        const partes = email.split('@');
+        return partes[0];
+    }
+    async function handleGoogleLogin(session) {
+        try {
+            const { email, name } = session.user;
+            let nombreUsuario = obtenerParteAntesDelArroba(email)
+            const { data: datosUser } = await api.post('user/takePassword', { email: email });
+            const { clave } = datosUser.data[0]
+            //console.log('Datos del usuario:', session.user);
+            //console.log(clave);
+            login({ username: nombreUsuario, password: clave }); // Ajusta esto según tu lógica de login
+        } catch (error) {
+            console.log(error);
+        }
     }
 
     async function verificarDatos() {
-        //Tengo que hacer una llamada a la api para para chequear 
-        //que el usuario que esta ingresando no exita y que tampoco exita el mail
-        const { data: datosUser } = await api.post('user/validaUsuario', { usuario: datos.usuario })
-        //const { cantUsu/*, fecha*/ } = datosUser.data[0]
+        const { data: datosUser } = await api.post('user/validaUsuario', { usuario: datos.usuario });
 
         if (datos.clave === datos.repclave) {
             if (datosUser.data[0].cantUsu == 0) {
-                crearNuevoUsuario()
-            }
-            else {
-                setError('Ese Usuario ya existe')
-                setLoading(false)
+                crearNuevoUsuario();
+            } else {
+                setError('Ese Usuario ya existe');
+                setLoading(false);
             }
         } else {
-            setError('Clave invalida')
-            setLoading(false)
+            setError('Clave invalida');
+            setLoading(false);
         }
     }
 
     async function crearNuevoUsuario() {
         try {
-            const { data: clientes } = await api.post('user/createUsuario', { fromData: datos })
+            const { data: clientes } = await api.post('user/createUsuario', { fromData: datos });
             if (clientes.statusCode === 200) {
-                alert('Se creo el usuario correctamente, ya puede iniciar sesión')
+                alert('Se creo el usuario correctamente, ya puede iniciar sesión');
             } else {
-                alert('No se pudo crear el usuario, intente nuevamente mas tarde')
+                alert('No se pudo crear el usuario, intente nuevamente mas tarde');
             }
         } catch (error) {
-            console.log(error)
+            console.log(error);
         }
-        setLoading(false)
-        setShowRegistr(false)
+        setLoading(false);
+        setShowRegistr(false);
     }
 
     function cancel() {
-        setShowRegistr(false)
-        setError('')
+        setShowRegistr(false);
+        setError('');
     }
 
     function handleChange(e) {
-        const { value, name } = e.target
-        setDatos({ ...datos, [name]: value })
+        const { value, name } = e.target;
+        setDatos({ ...datos, [name]: value });
     }
 
     return (
@@ -76,7 +108,6 @@ export default function ModalRegistrarse({ show, setShowRegistr }) {
                 <Modal.Body>
                     <h1>Registrarse</h1>
                     <main className='formulario'>
-
                         <div className="form-floating">
                             <input
                                 type="text"
@@ -177,18 +208,12 @@ export default function ModalRegistrarse({ show, setShowRegistr }) {
                             />
                             <label htmlFor="local">Localidad</label>
                         </div>
-                        {/*<div className="form-floating">
-                            <input
-                                type="date"
-                                className="form-control"
-                                placeholder="Fecha"
-                                name='fecha'
-                                onChange={handleChange}
-                            />
-                            <label htmlFor="repcontraseña">Fecha nacimiento</label>
-                        </div>*/}
                         <button disabled={loading} onClick={handleSubmit} className="w-100 btn btn-lg btn-light mt-2" id='buttonLogin'>
                             REGISTRARSE
+                        </button>
+                        {/* Botón de registro con Google */}
+                        <button onClick={() => iniciarGoogle()} className="w-100 btn btn-lg btn-light mt-2" id='buttonGoogle'>
+                            REGISTRARSE CON GOOGLE
                         </button>
                         <button onClick={cancel} className="w-100 btn btn-lg btn-light mt-2" id='buttonLogin'>
                             CANCELAR
@@ -204,46 +229,46 @@ export default function ModalRegistrarse({ show, setShowRegistr }) {
                 </Modal.Body>
             </Modal>
             <style jsx>{`
-                main{
-                    display:flex;
-                    flex-direction:column;
-                    text-align: center;
-                    align-items:center;
-                }
-                button{
-                    background-color: rgb(189, 15, 151);
-                    color: white;
-                    max-width: 200px;
-                    transition: 0.2s;
-                }
-                button:hover{
-                    background-color: rgb(189, 15, 151);
-                    color: #000;;
-                    max-width: 210px;
-                    font-size: 19px;
-                }
-                h1{
-                    align-items:center;
-                    text-align: center;
-                    margin-bottom: 30px;
-                }
-                strong{
-                    color:red;
-                    margin-top: 10px;
-                    font-size: 17px;
-                    text-transform: uppercase;
-                }
-                div{
-                    display: flex;
-                    justify-content: center;
-                    align-items: center;
-                    margin-top: 5px;
-                }
-                input{
-                    width: 200px;
-                    transition: 0.2s;
-                }
-            `}</style>
+        main{
+          display:flex;
+          flex-direction:column;
+          text-align: center;
+          align-items:center;
+        }
+        button{
+          background-color: rgb(189, 15, 151);
+          color: white;
+          max-width: 200px;
+          transition: 0.2s;
+        }
+        button:hover{
+          background-color: rgb(189, 15, 151);
+          color: #000;
+          max-width: 210px;
+          font-size: 19px;
+        }
+        h1{
+          align-items:center;
+          text-align: center;
+          margin-bottom: 30px;
+        }
+        strong{
+          color:red;
+          margin-top: 10px;
+          font-size: 17px;
+          text-transform: uppercase;
+        }
+        div{
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          margin-top: 5px;
+        }
+        input{
+          width: 200px;
+          transition: 0.2s;
+        }
+      `}</style>
         </>
-    )
+    );
 }

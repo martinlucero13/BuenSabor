@@ -1,5 +1,12 @@
 import api from "../../../src/Services/api"
-
+export const config = {
+    api: {
+        bodyParser: {
+            sizeLimit: '25mb'
+        },
+        /* responseLimit: false, */
+    },
+}
 export default async function handler(req, res) {
     try {
         res.setHeader('Content-Type', 'application/json');
