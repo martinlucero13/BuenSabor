@@ -230,7 +230,7 @@ export default function TablaPedidosDelivery() {
                 }
                 button {
                     margin: 15px;
-                    background-color: rgb(138, 13, 111);
+                    background-color: #E11919;
                     color: white;
                     border-radius: 20px;
                     font-size: 17px;
@@ -242,7 +242,7 @@ export default function TablaPedidosDelivery() {
                 }
                 button:hover {
                     color: black;
-                    background-color: rgb(182, 27, 182);
+                    background-color: #FF0000;
                 }
                 .button_disabled{
                     margin: 15px;

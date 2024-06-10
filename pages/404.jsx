@@ -36,7 +36,7 @@ export default function FourOhFour() {
                 }
                 button{
                     border-radius: 20px;
-                    background-color: rgb(182, 27, 182);
+                    background-color: #E11919;
                     border: none;
                     padding: 10px;
                     font-size: 20px;
@@ -46,7 +46,7 @@ export default function FourOhFour() {
                 }
                 button:hover{
                     color: black;
-                    background-color: rgb(182, 27, 182);
+                    background-color: #FF0000;
                 }
             `}</style>
         </>

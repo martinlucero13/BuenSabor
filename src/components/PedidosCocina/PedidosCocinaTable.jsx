@@ -69,7 +69,7 @@ const Columns = (handleAgregar, handleCambiarEstado, handleDetalle) => (
                         <style jsx>{`
                         button {
                         margin: 10px;
-                        background-color: rgb(138, 13, 111);
+                        background-color: #E11919;
                         color: white;
                         border-radius: 20px;
                         font-size: 15px;
@@ -81,7 +81,7 @@ const Columns = (handleAgregar, handleCambiarEstado, handleDetalle) => (
                         }
                         button:hover {
                             color: black;
-                            background-color: rgb(182, 27, 182);
+                            background-color: #FF0000;
                         }
                     `}</style>
                     </div>
@@ -106,7 +106,7 @@ const Columns = (handleAgregar, handleCambiarEstado, handleDetalle) => (
                             <style jsx>{`
                                 button {
                                 margin: 10px;
-                                background-color: rgb(138, 13, 111);
+                                background-color: #E11919;
                                 color: white;
                                 border-radius: 20px;
                                 font-size: 15px;
@@ -118,7 +118,7 @@ const Columns = (handleAgregar, handleCambiarEstado, handleDetalle) => (
                                 }
                                 button:hover {
                                     color: black;
-                                    background-color: rgb(182, 27, 182);
+                                    background-color: #FF0000;
                                 }
                             `}</style>
                         </div>
@@ -127,7 +127,7 @@ const Columns = (handleAgregar, handleCambiarEstado, handleDetalle) => (
                             <style jsx>{`
                                 button {
                                 margin: 10px;
-                                background-color: rgb(138, 13, 111);
+                                background-color: #E11919;
                                 color: white;
                                 border-radius: 20px;
                                 font-size: 15px;
@@ -139,7 +139,7 @@ const Columns = (handleAgregar, handleCambiarEstado, handleDetalle) => (
                                 }
                                 button:hover {
                                     color: black;
-                                    background-color: rgb(182, 27, 182);
+                                    background-color: #FF0000;
                                 }
                             `}</style>
                         </div>
@@ -252,7 +252,7 @@ export default function PedidosCocinaTable() {
                 }
                 button {
                     margin: 15px;
-                    background-color: rgb(138, 13, 111);
+                    background-color: #E11919;
                     color: white;
                     border-radius: 20px;
                     font-size: 17px;
@@ -264,7 +264,7 @@ export default function PedidosCocinaTable() {
                 }
                 button:hover {
                     color: black;
-                    background-color: rgb(182, 27, 182);
+                    background-color: #FF0000;
                 }
                 h1 {
                     margin:15px;

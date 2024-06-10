@@ -55,7 +55,7 @@ export default function BarListItem({ title, iconData, show, handleShow }) {
                 }
                 li:hover{
                     color:black;
-                    background-color: rgb(182, 27, 182);
+                    background-color: #FF0000;
                     cursor:pointer;
                 }
                 p{

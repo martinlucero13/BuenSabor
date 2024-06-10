@@ -195,7 +195,7 @@ export default function ResumenPedido() {
                     margin-top:50px;
                     height: 35px;
                     width: 100%;
-                    background-color: rgb(138, 13, 111);
+                    background-color: #E11919;
                     color: #fff;
                     border: none;
                     border-radius: 20px;
@@ -203,7 +203,7 @@ export default function ResumenPedido() {
                 }
                 form button:hover{
                     color: black;
-                    background-color: rgb(182, 27, 182);
+                    background-color: #FF0000;
                 }
                 form span{
                     font-weight: bold;

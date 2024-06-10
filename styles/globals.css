@@ -7,7 +7,7 @@ body {
   height: max-content;
   display: flex;
   flex-direction: column;
-  background-color: rgb(245, 224, 224);
+  background-color: #FFE8C5;
 }
 
 #__next {
