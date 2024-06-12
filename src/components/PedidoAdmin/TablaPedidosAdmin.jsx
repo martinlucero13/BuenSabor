@@ -206,8 +206,8 @@ export const TablaPedidosAdmin = ({ setPrint }) => {
                     expandableRowsComponent={ExpandedComponent}
                     pagination
                     paginationComponentOptions={paginationOptions}
-                    defaultSortFieldId={3}
-                    defaultSortAsc={false}
+                    //defaultSortFieldId={3}
+                    //defaultSortAsc={false}
                     progressPending={loading}
                     progressComponent={<Loading message='Cargando pedidos...' fontSize='20' />}
                 />

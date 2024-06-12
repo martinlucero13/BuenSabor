@@ -31,9 +31,9 @@ export default function TablaPedidos() {
         try {
             const NROLEG = await takeNROLEG()
             const { data: pedidos } = await apiFeco.post('vinos/tomarPedido', { NROLEG })
-            console.log(pedidos.data)
+            //console.log(pedidos.data)
             const dataFormat = getDataFormat(pedidos.data)
-            console.log(dataFormat)
+            //console.log(dataFormat)
             setDataTable(dataFormat)
             setLoading(false)
         } catch (error) {
@@ -171,8 +171,8 @@ export default function TablaPedidos() {
                     expandableRowsComponent={ExpandedComponent}
                     pagination
                     paginationComponentOptions={paginationOptions}
-                    defaultSortFieldId={3}
-                    defaultSortAsc={false}
+                    //defaultSortFieldId={3}
+                    //defaultSortAsc={false}
                     progressPending={loading}
                     progressComponent={<Loading message='Cargando pedidos...' fontSize='20' />}
                 />
