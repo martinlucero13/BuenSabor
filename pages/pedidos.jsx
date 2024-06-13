@@ -19,6 +19,7 @@ export default function Pedidos() {
         checkSession()
     }, [user])
 
+
     return (
         <>
             <TablaPedidos />

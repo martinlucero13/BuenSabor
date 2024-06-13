@@ -21,6 +21,7 @@ export function getDataFormat(dataTable) {
             RETIRO: data.tipoEnvio,
             TOTALPEDIDO: data.totalCosto,
             FORMAPAGO: data.formaPago,
+            PAGADO: data.pagado,
             ESTADO: data.estado,
             CANCELAR: data.CANCELAR,
             PENDIENTE: data.PENDIENTE,

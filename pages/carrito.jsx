@@ -12,7 +12,6 @@ export default function Carrito() {
     const { articulos } = useContext(PedidoContext)
     const { checkSession } = useUser()
     const navigate = useRouter()
-
     useEffect(() => {
         if (user?.USMARCA1 === null) {
             navigate.push('/home')
