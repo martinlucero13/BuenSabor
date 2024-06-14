@@ -36,7 +36,7 @@ export default function LeftNavBar({ show, handleShow }) {
                     height: 100vh;
                     color: white;
                     z-index: -1;
-                    background-color: rgba(138, 13, 111, .8);
+                    background-color: #E11919;
                     transition: all .5s;
                     opacity: ${show};
                    {/*  border-top: 8px white solid;

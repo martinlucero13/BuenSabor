@@ -1,8 +1,6 @@
 
 export function getDataFormat(dataTable) {
-    const cabeceraOrdenada = dataTable.sort((a, b) => {
-        return a.idPedido - b.idPedido
-    })
+    const cabeceraOrdenada = dataTable.sort((a, b) => b.idPedido - a.idPedido);
 
     let idPedido = 0
     const cabeceraMap = cabeceraOrdenada.map(data => {

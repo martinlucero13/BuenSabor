@@ -117,12 +117,12 @@ export default function UseModalCambioContraseña({ show, setShow, title, cambio
                     align-items:center;
                 }
                 button{
-                    background-color: rgb(189, 15, 151);
+                    background-color: #E11919;
                     color: white;
                     max-width: 210px;
                 }
                 button:hover{
-                    background-color: rgb(189, 15, 151);
+                    background-color: #FF0000;
                     color: #000;;
                     max-width: 210px;
                 }

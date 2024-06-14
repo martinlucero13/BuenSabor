@@ -19,9 +19,9 @@ export default function EleccionMarcaVino() {
     const [marcas, setMarcas] = useState([])
     const navigate = useRouter()
 
-    useEffect(() => {
+    /*useEffect(() => {
         checkSession()
-    }, [user])
+    }, [user])*/
 
     useEffect(() => {
         if (user?.USMARCA1 === null) {
@@ -121,7 +121,7 @@ export default function EleccionMarcaVino() {
                     margin-top:10px;
                     height: 35px;
                     width: 50%;
-                    background-color: rgb(138, 13, 111);
+                    background-color: #E11919;
                     color: #fff;
                     border: none;
                     border-radius: 20px;
@@ -129,7 +129,7 @@ export default function EleccionMarcaVino() {
                 }
                 .buttonRetira:hover{
                     color: black;
-                    background-color: rgb(182, 27, 182);
+                    background-color: #FF0000;
                 }
                 .disabledButton{
                     margin-top:10px;

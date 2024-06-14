@@ -28,6 +28,7 @@ export default function ResumenPedido() {
   const [transition, setTransition] = useState(false);
   const [formData, setFormData] = useState(INITIAL_STATE);
   const [showConfirm, setShowConfirm] = useState(false);
+  console.log(user);
 
   function handleChangeForm(event) {
     const { name, value } = event.target;
@@ -287,9 +288,9 @@ export default function ResumenPedido() {
         .then((response) => response.json())
         .then((data) => {
           const initPoint = data.init_point;
-          setArticulos([]);
 
           window.location.href = initPoint;
+          setArticulos([]);
         })
         .catch((error) => {
           // Manejar el error en caso de fallo en la creación de la preferencia

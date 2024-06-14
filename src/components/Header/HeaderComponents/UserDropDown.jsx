@@ -74,7 +74,7 @@ export default function UserDropDown({ setCambioContraseña }) {
                 }
                 li:hover{
                     color:black;
-                    background-color: rgb(182, 27, 182);
+                    background-color: #FF0000;
                     cursor:pointer;
                 }
                 `}</style>

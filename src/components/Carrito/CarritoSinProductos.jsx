@@ -26,7 +26,7 @@ export default function CarritoSinProductos() {
                 padding: 0;
             }
             h1{
-                color: rgb(138, 13, 111);
+                color: #E11919;
                 font-size: 60px;
             }
             @media and (max-width: 875px){

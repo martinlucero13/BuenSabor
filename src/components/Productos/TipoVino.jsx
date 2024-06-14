@@ -3,6 +3,7 @@ import Image from "next/image"
 import CompraContext from "../../Context/pedidoContext"
 import Alert from "./Alert"
 import UtilityContext from "../../Context/utilityContext"
+import { Modal, Button } from "react-bootstrap"
 
 export default function TipoVino({ vino, filter, precioOrden, setOpen }) {
     const { articulos, setArticulos } = useContext(CompraContext)
@@ -11,6 +12,9 @@ export default function TipoVino({ vino, filter, precioOrden, setOpen }) {
     const [show, setShow] = useState(false)
     const [disabledAdd, setDisabledAdd] = useState(false)
     const [url, setUrl] = useState(`/${vino.imagen}.jpg`)
+    const [openModal, setOpenModal] = useState(false)
+    const [descripcionVino, setDescripcionVino] = useState('')
+    const [denominacionVino, setDenominacionVino] = useState('')
 
     useEffect(() => {
         if (cantidad < 1) {
@@ -82,12 +86,37 @@ export default function TipoVino({ vino, filter, precioOrden, setOpen }) {
         setCantidad(1)
     }
 
+    function handleModal(type, descripcion, denominacion) {
+        setOpenModal(type)
+        setDescripcionVino(descripcion)
+        setDenominacionVino(denominacion)
+    }
+
     return (
         <>
-            <div>
+            <Modal
+                show={openModal}
+                aria-labelledby="contained-modal-title-vcenter"
+                centered
+            >
+                <Modal.Body style={{ alignItems: 'center' }}>
+                    < >
+                        <h3>{denominacionVino}</h3>
+                        <h4>{descripcionVino}</h4>
+                        <Button
+                            onClick={() => handleModal(false, '', '')}
+                            style={{ backgroundColor: '#E11919' }}
+                        >
+                            Cerrar
+                        </Button>
+                    </>
+                </Modal.Body>
+            </Modal>
+            {<div>
                 <form onSubmit={handleVerifiy}>
                     <div style={{ height: '230px', marginBottom: '5px', display: 'inline-block', position: 'relative' }}>
                         <Image
+                            onClick={() => handleModal(true, vino.descripcion, vino.denominacion)}
                             src={url}
                             alt=''
                             style={{ borderRadius: '20px', marginTop: '2px' }}
@@ -112,7 +141,11 @@ export default function TipoVino({ vino, filter, precioOrden, setOpen }) {
                     setShow={setShow}
                 />
             </div >
+            }
             <style jsx>{`
+            #contenerModal{
+                align-items: center;
+            }
             div{
                 display: flex;
                 flex-direction: column;
@@ -146,13 +179,13 @@ export default function TipoVino({ vino, filter, precioOrden, setOpen }) {
                 border-radius: 50px;
                 width: 180px;
                 color: #fff;
-                background-color:rgb(138, 13, 111);
+                background-color:#E11919;
                 border:none;
                 transition: 0.3s;
             }
             .buttonAdd:hover{
                 color: black;
-                background-color: rgb(182, 27, 182);
+                background-color: #FF0000;
             }
             .disabledButton{
                 margin: 20px 0;

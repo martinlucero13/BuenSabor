@@ -47,7 +47,7 @@ export default function NewNavBar({ setCambioContraseña }) {
                         </h1>
                     </section>
                     <article>
-                        {user.USROL === 1 &&
+                        {user.USROL === '1' &&
                             <ul>
                                 <li className='li'>
                                     <ButtonAndIcon
@@ -92,7 +92,7 @@ export default function NewNavBar({ setCambioContraseña }) {
                     width: 100%;
                     margin: 0;
                     padding: 0;
-                    background-color: rgb(138, 13, 111);
+                    background-color: #E11919;
                 }
                 section{
                     display: flex;
@@ -124,7 +124,7 @@ export default function NewNavBar({ setCambioContraseña }) {
                 }
                 .li:hover{
                     color:black;
-                    background-color: rgb(182, 27, 182);
+                    background-color: #FF0000;
                     cursor:pointer;
                 }
 

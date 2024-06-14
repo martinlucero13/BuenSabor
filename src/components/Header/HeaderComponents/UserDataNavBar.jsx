@@ -12,7 +12,7 @@ export default function UserDataNavBar({ setCambioContraseña }) {
             </div>
             <style jsx>{`
                 .dropdown{
-                    background-color: rgb(138, 13, 111);
+                    background-color: #E11919;
                     border: none;
                     cursor: pointer;
                     position: relative;
@@ -27,7 +27,7 @@ export default function UserDataNavBar({ setCambioContraseña }) {
                     position: absolute;
                     flex-direction: column;
                     align-items: center;
-                    background-color: rgb(138, 13, 111);
+                    background-color: #E11919;
                     min-width: 200px;
                     right: 0;
                     padding: 10px;

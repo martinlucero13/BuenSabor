@@ -164,7 +164,7 @@ export default function Login() {
             }
             
             #buttonLogin {
-              background-color: rgb(189, 15, 151);
+              background-color: #E11919;
               color: white;
             }
 
@@ -173,7 +173,7 @@ export default function Login() {
             }
 
             #buttonGoogle {
-              background-color: rgb(189, 15, 151);
+              background-color: #E11919;
               color: white;
             }
 

@@ -110,7 +110,7 @@ export default function Vinos({ marcas }) {
                                     ))
                                     : <section>
                                         <Lupa width={200} height={200} />
-                                        <h2 style={{ marginTop: '5px', fontWeight: 'bold', color: 'rgb(138, 13, 111)' }}>No hay productos.</h2>
+                                        <h2 style={{ marginTop: '5px', fontWeight: 'bold', color: '#E11919' }}>No hay productos.</h2>
                                     </section>
                             }
                         </div>
