@@ -8,10 +8,11 @@ import UserContext from "../../context/userContext";
 import Cookies from "js-cookie";
 import { getDataFormat } from "./Helpers";
 import dayjs from "dayjs";
-import { Trash } from "react-bootstrap-icons";
+import { Trash, PrinterFill } from "react-bootstrap-icons";
 import Image from "next/image";
+import { PDFFactura } from '../Print/PDFFactura';
 
-export default function TablaPedidos() {
+export const TablaPedidos = ({ setPrint }) => {
   const { user } = useContext(UserContext);
   const [loading, setLoading] = useState(true);
   const [dataTable, setDataTable] = useState([]);
@@ -109,6 +110,13 @@ export default function TablaPedidos() {
       });
       handleLoad();
     }
+  }
+
+  async function Imprimir(row) {
+    setPrint(true)
+    const doc = PDFFactura(row)
+    doc.save(`Factura-N°${row.nrofac}.pdf`)
+    setPrint(false)
   }
 
   const columnsTable = [
@@ -217,7 +225,7 @@ export default function TablaPedidos() {
     {
       name: "Acciones",
       selector: (row) => row.ESTADO,
-      grow: 1,
+      grow: 1.2,
       center: true,
       format: (row) => {
         return (
@@ -260,9 +268,9 @@ export default function TablaPedidos() {
                   </button>
                 )}
               {(row.ESTADO === 0 && row.FORMAPAGO === "1") ||
-              (row.FORMAPAGO === "2" &&
-                row.PAGADO === 0 &&
-                row.ESTADO !== 3) ? (
+                (row.FORMAPAGO === "2" &&
+                  row.PAGADO === 0 &&
+                  row.ESTADO !== 3) ? (
                 <div onClick={() => handleCancel(row)}>
                   <Trash
                     style={{
@@ -274,6 +282,9 @@ export default function TablaPedidos() {
                   />
                 </div>
               ) : null}
+              <div onClick={() => Imprimir(row)}>
+                <PrinterFill style={{ color: 'grey', width: '25px', height: '25px', cursor: 'pointer' }} />
+              </div>
             </div>
           </>
         );
