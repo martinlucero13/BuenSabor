@@ -19,16 +19,14 @@ export default function ResumenPedido() {
   const { user } = useContext(UserContext);
   const { articulos, setArticulos } = useContext(PedidoContext);
   const { setRetiro, retiro } = useContext(UtilityContext);
-  const [totalIVA, setTotalIVA] = useState(0);
   const [totalNETO, setTotalNETO] = useState(0);
-  const [finalizarPedido, setFinalizarPedido] = useState(true);
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(true);
   const [tokenMercadoPago, setTokenMercadoPago] = useState([]);
   const [transition, setTransition] = useState(false);
   const [formData, setFormData] = useState(INITIAL_STATE);
   const [showConfirm, setShowConfirm] = useState(false);
-  console.log(user);
+  //console.log(user);
 
   function handleChangeForm(event) {
     const { name, value } = event.target;
@@ -68,11 +66,7 @@ export default function ResumenPedido() {
   }
 
   function totales() {
-    let totalesIVA = 0;
     let totalesNETO = 0;
-    /*articulos.forEach(articulo => {
-            totalesIVA += articulo.precioVenta * articulo.cantidad
-        })*/
     articulos.forEach((articulo) => {
       totalesNETO += articulo.precioVenta * articulo.cantidad;
     });
@@ -88,14 +82,6 @@ export default function ResumenPedido() {
     totales();
   }, [articulos]);
 
-  useEffect(() => {
-    if (totalIVA > user.credito) {
-      setFinalizarPedido(false);
-    } else {
-      setFinalizarPedido(true);
-    }
-  }, [totalIVA]);
-
   async function handlePagaClick(e) {
     e.preventDefault();
     setShowConfirm(true); // Show the confirmation modal
@@ -107,9 +93,6 @@ export default function ResumenPedido() {
     setOpen(true);
     const dataPedidoRegalo = [...articulos];
     const legajo = String(user.USNROLEG);
-    //const CONDICIONPAGO = verCondicion(articulos[0])
-    //const tipPed = articulos[0].tipPed
-    //const impuesto = totalNETO * 0.21
     const hora = dayjs().format("HHmmss");
     const fecha = dayjs().format("DDMMYYYY");
     const origen = selectOrigin();
@@ -120,19 +103,11 @@ export default function ResumenPedido() {
         ...articulo,
         cantidad: articulo.cantidad,
         retiro: retiro.retiro,
-        //tipPed,
-        //origen,
-        //totalIVA: Number(totalIVA),
         totalNETO: Number(totalNETO),
         legajo: legajo,
         formaPago: 1,
-        //impuesto: Number(impuesto.toFixed(2)),
         fecha,
         hora,
-        //CONDICIONPAGO,
-        //EQUI_LIT: Math.round(equivalencia.EQUI_LIT),
-        //EQUI_PESO: Math.round(equivalencia.EQUI_PESO),
-        //EQUI_UN: Math.round(equivalencia.EQUI_UN),
       };
     });
     /* console.log(dataPedido) */
@@ -155,18 +130,6 @@ export default function ResumenPedido() {
       alert("Error al realizar su pedido, intente de nuevo en unos minutos");
       setOpen(false);
       setLoading(false);
-    }
-  }
-
-  function verCondicion(articulo) {
-    const date = dayjs().format("YYYY-MM-DD");
-    if (articulo.tipPed === "SB") {
-      /* return '060' */
-      return "065";
-    } else if (date <= "2022-12-30" && date >= "2022-11-18") {
-      return "007";
-    } else {
-      return "003";
     }
   }
 
@@ -211,9 +174,6 @@ export default function ResumenPedido() {
       setOpen(true);
       const dataPedidoRegalo = [...articulos];
       const legajo = String(user.USNROLEG);
-      //const CONDICIONPAGO = verCondicion(articulos[0])
-      //const tipPed = articulos[0].tipPed
-      //const impuesto = totalNETO * 0.21
       const hora = dayjs().format("HHmmss");
       const fecha = dayjs().format("DDMMYYYY");
       const origen = selectOrigin();
@@ -332,14 +292,7 @@ export default function ResumenPedido() {
           TOTAL: <span>${totalNETO} ARS </span>
         </p>
 
-        {articulos[0].tipPed === "SB" && (
-          <p style={{ fontSize: "12px" }}>
-            (SE REALIZARA UNA NOTA DE CREDITO POR LOS DESCUENTOS)
-          </p>
-        )}
-        {!finalizarPedido ? (
-          <strong>Crédito insuficiente para realizar el pedido</strong>
-        ) : (
+        {(
           <>
             <button
               id="mercadoPago"
@@ -367,53 +320,54 @@ export default function ResumenPedido() {
               </span>
             </button>
             {retiro.retiro === "1" ? (
-              <button disabled>Finalizar Pedido</button>
+              <button >Finalizar Pedido</button>
             ) : null}
           </>
         )}
+
+        {retiro.retiro === "2" ? (
+          <>
+            <h5>Datos Domicilio</h5>
+            <section className={transition ? "element-hidden" : "element"}>
+              <label>Calle</label>
+              <input
+                required
+                placeholder="calle"
+                maxLength={200}
+                onChange={handleChangeForm}
+                value={formData.calle}
+                type="text"
+                name="nombre"
+              />
+            </section>
+            <section className={transition ? "element-hidden" : "element"}>
+              <label>N° Calle</label>
+              <input
+                required
+                placeholder="n° calle"
+                maxLength={200}
+                onChange={handleChangeForm}
+                value={formData.numero}
+                type="number"
+                min={1}
+                name="nombre"
+              />
+            </section>
+            <section className={transition ? "element-hidden" : "element"}>
+              <label>Localidad</label>
+              <input
+                required
+                placeholder="localidad"
+                maxLength={200}
+                onChange={handleChangeForm}
+                value={formData.localidad}
+                type="text"
+                name="nombre"
+              />
+            </section>
+          </>
+        ) : null}
       </form>
-      {retiro.retiro === "2" ? (
-        <form onSubmit={handleSubmit}>
-          <h5>Datos Domicilio</h5>
-          <section className={transition ? "element-hidden" : "element"}>
-            <label>Calle</label>
-            <input
-              required
-              placeholder="calle"
-              maxLength={200}
-              onChange={handleChangeForm}
-              value={formData.calle}
-              type="text"
-              name="nombre"
-            />
-          </section>
-          <section className={transition ? "element-hidden" : "element"}>
-            <label>N° Calle</label>
-            <input
-              required
-              placeholder="n° calle"
-              maxLength={200}
-              onChange={handleChangeForm}
-              value={formData.numero}
-              type="number"
-              min={1}
-              name="nombre"
-            />
-          </section>
-          <section className={transition ? "element-hidden" : "element"}>
-            <label>Localidad</label>
-            <input
-              required
-              placeholder="localidad"
-              maxLength={200}
-              onChange={handleChangeForm}
-              value={formData.localidad}
-              type="text"
-              name="nombre"
-            />
-          </section>
-        </form>
-      ) : null}
       <Modal show={showConfirm} onHide={() => setShowConfirm(false)}>
         <Modal.Header closeButton>
           <Modal.Title>Confirmar Pago</Modal.Title>
