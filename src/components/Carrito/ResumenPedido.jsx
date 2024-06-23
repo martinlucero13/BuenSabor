@@ -26,6 +26,7 @@ export default function ResumenPedido() {
   const [transition, setTransition] = useState(false);
   const [formData, setFormData] = useState(INITIAL_STATE);
   const [showConfirm, setShowConfirm] = useState(false);
+  const [cerrado, setCerrado] = useState(true);
   //console.log(user);
 
   function handleChangeForm(event) {
@@ -65,6 +66,25 @@ export default function ResumenPedido() {
     }
   }
 
+  function tomarHorario() {
+    const now = new Date();
+    const dayOfWeek = now.getDay();
+    const hours = now.getHours();
+    if (dayOfWeek === 0 || dayOfWeek === 6) {
+      if ((hours >= 11 && hours < 15) || (hours >= 20 && hours <= 23)) {
+        setCerrado(false)
+      } else {
+        setCerrado(true)
+      }
+    } else {
+      if (hours >= 20 && hours <= 23) {
+        setCerrado(false)
+      } else {
+        setCerrado(true)
+      }
+    }
+  }
+
   function totales() {
     let totalesNETO = 0;
     articulos.forEach((articulo) => {
@@ -76,6 +96,7 @@ export default function ResumenPedido() {
 
   useEffect(async () => {
     handleLoad();
+    tomarHorario();
   }, []);
 
   useEffect(() => {
@@ -261,137 +282,144 @@ export default function ResumenPedido() {
 
   return (
     <>
-      <div></div>
-      <form onSubmit={handleSubmit}>
-        <h5>Resumen del pedido</h5>
-        <Form id="form-entrega">
-          <div id="form-retiro-local">
-            <Form.Check
-              type="radio"
-              id="retiro-local"
-              name="forma-entrega"
-              label="Retiro Local"
-              value="1"
-              checked={retiro.retiro == 1 ? true : false}
-              onChange={handleRetiro}
-            />
-          </div>
-          <div id="form-retiro-dom">
-            <Form.Check
-              type="radio"
-              id="domicilio"
-              name="forma-entrega"
-              label="Recibir en Domicilio"
-              value="2"
-              checked={retiro.retiro == 2 ? true : false}
-              onChange={handleRetiro}
-            />
-          </div>
-        </Form>
-        <p>
-          TOTAL: <span>${totalNETO} ARS </span>
-        </p>
+      {cerrado ?
+        <form>
+          <strong>Horario de atención de lunes a domingos de 20:00 a 12:00. Sábados y domingos de 11:00 a 15:00</strong>
+        </form>
+        : <>
+          <div></div>
+          <form onSubmit={handleSubmit}>
+            <h5>Resumen del pedido</h5>
+            <Form id="form-entrega">
+              <div id="form-retiro-local">
+                <Form.Check
+                  type="radio"
+                  id="retiro-local"
+                  name="forma-entrega"
+                  label="Retiro Local"
+                  value="1"
+                  checked={retiro.retiro == 1 ? true : false}
+                  onChange={handleRetiro}
+                />
+              </div>
+              <div id="form-retiro-dom">
+                <Form.Check
+                  type="radio"
+                  id="domicilio"
+                  name="forma-entrega"
+                  label="Recibir en Domicilio"
+                  value="2"
+                  checked={retiro.retiro == 2 ? true : false}
+                  onChange={handleRetiro}
+                />
+              </div>
+            </Form>
+            <p>
+              TOTAL: <span>${totalNETO} ARS </span>
+            </p>
 
-        {(
-          <>
-            <button
-              id="mercadoPago"
-              onClick={handlePagaClick}
-              style={{
-                display: "flex",
-                alignItems: "center",
-                backgroundColor: "#00b1ea",
-                border: "none",
-                padding: "10px",
-                borderRadius: "20px",
-                cursor: "pointer",
-                justifyContent: "center",
-              }}
-            >
-              <Image
-                src={"/mercado-pago.png"}
-                alt="Mercado Pago"
-                width={25}
-                height={20}
-                style={{ marginRight: "10px" }}
-              />
-              <span style={{ color: "white", fontWeight: "bold" }}>
-                Mercado Pago
-              </span>
-            </button>
-            {retiro.retiro === "1" ? (
-              <button >Finalizar Pedido</button>
-            ) : null}
-          </>
-        )}
-
-        {retiro.retiro === "2" ? (
-          <>
-            <h5>Datos Domicilio</h5>
-            <section className={transition ? "element-hidden" : "element"}>
-              <label>Calle</label>
-              <input
-                required
-                placeholder="calle"
-                maxLength={200}
-                onChange={handleChangeForm}
-                value={formData.calle}
-                type="text"
-                name="nombre"
-              />
-            </section>
-            <section className={transition ? "element-hidden" : "element"}>
-              <label>N° Calle</label>
-              <input
-                required
-                placeholder="n° calle"
-                maxLength={200}
-                onChange={handleChangeForm}
-                value={formData.numero}
-                type="number"
-                min={1}
-                name="nombre"
-              />
-            </section>
-            <section className={transition ? "element-hidden" : "element"}>
-              <label>Localidad</label>
-              <input
-                required
-                placeholder="localidad"
-                maxLength={200}
-                onChange={handleChangeForm}
-                value={formData.localidad}
-                type="text"
-                name="nombre"
-              />
-            </section>
-          </>
-        ) : null}
-      </form>
-      <Modal show={showConfirm} onHide={() => setShowConfirm(false)}>
-        <Modal.Header closeButton>
-          <Modal.Title>Confirmar Pago</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <p>¿Está seguro de que desea continuar con el pago ?</p>
-          <Button variant="secondary" onClick={() => setShowConfirm(false)}>
-            Cancelar
-          </Button>
-          <Button variant="primary" onClick={handlePagarMercadoPagoClick}>
-            Confirmar
-          </Button>
-        </Modal.Body>
-        <Modal.Footer></Modal.Footer>
-      </Modal>
-      <Modal show={open} centered>
-        <Modal.Body>
-          <div>
-            {loading && (
-              <Loading message="Guardando pedido..." marginLeft={-10} />
+            {(
+              <>
+                <button
+                  id="mercadoPago"
+                  onClick={handlePagaClick}
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    backgroundColor: "#00b1ea",
+                    border: "none",
+                    padding: "10px",
+                    borderRadius: "20px",
+                    cursor: "pointer",
+                    justifyContent: "center",
+                  }}
+                >
+                  <Image
+                    src={"/mercado-pago.png"}
+                    alt="Mercado Pago"
+                    width={25}
+                    height={20}
+                    style={{ marginRight: "10px" }}
+                  />
+                  <span style={{ color: "white", fontWeight: "bold" }}>
+                    Mercado Pago
+                  </span>
+                </button>
+                {retiro.retiro === "1" ? (
+                  <button >Finalizar Pedido</button>
+                ) : null}
+              </>
             )}
-          </div>
-        </Modal.Body>
-      </Modal>
+
+            {retiro.retiro === "2" ? (
+              <>
+                <h5>Datos Domicilio</h5>
+                <section className={transition ? "element-hidden" : "element"}>
+                  <label>Calle</label>
+                  <input
+                    required
+                    placeholder="calle"
+                    maxLength={200}
+                    onChange={handleChangeForm}
+                    value={formData.calle}
+                    type="text"
+                    name="nombre"
+                  />
+                </section>
+                <section className={transition ? "element-hidden" : "element"}>
+                  <label>N° Calle</label>
+                  <input
+                    required
+                    placeholder="n° calle"
+                    maxLength={200}
+                    onChange={handleChangeForm}
+                    value={formData.numero}
+                    type="number"
+                    min={1}
+                    name="nombre"
+                  />
+                </section>
+                <section className={transition ? "element-hidden" : "element"}>
+                  <label>Localidad</label>
+                  <input
+                    required
+                    placeholder="localidad"
+                    maxLength={200}
+                    onChange={handleChangeForm}
+                    value={formData.localidad}
+                    type="text"
+                    name="nombre"
+                  />
+                </section>
+              </>
+            ) : null}
+          </form>
+          <Modal show={showConfirm} onHide={() => setShowConfirm(false)}>
+            <Modal.Header closeButton>
+              <Modal.Title>Confirmar Pago</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+              <p>¿Está seguro de que desea continuar con el pago ?</p>
+              <Button variant="secondary" onClick={() => setShowConfirm(false)}>
+                Cancelar
+              </Button>
+              <Button variant="primary" onClick={handlePagarMercadoPagoClick}>
+                Confirmar
+              </Button>
+            </Modal.Body>
+            <Modal.Footer></Modal.Footer>
+          </Modal>
+          <Modal show={open} centered>
+            <Modal.Body>
+              <div>
+                {loading && (
+                  <Loading message="Guardando pedido..." marginLeft={-10} />
+                )}
+              </div>
+            </Modal.Body>
+          </Modal>
+        </>
+      }
       <style jsx>{`
         form {
           display: flex;
@@ -428,7 +456,7 @@ export default function ResumenPedido() {
         }
         form strong {
           text-align: center;
-          margin-top: 65px;
+          
           color: red;
         }
         form h5 {
