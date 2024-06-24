@@ -63,7 +63,7 @@ export default function Login() {
               setShow={setShow}
               setShowRegistr={setShowRegistr}
             />
-            <BtnGoogle />
+            {/*<BtnGoogle />*/}
           </>
         }
       </div>

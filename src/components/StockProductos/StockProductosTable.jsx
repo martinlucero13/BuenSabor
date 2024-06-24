@@ -190,6 +190,15 @@ export default function StockProductosTable() {
 
     const noData = <strong style={{ color: 'red', textAlign: 'center' }}>No se encontraron productos</strong>
 
+    const customStyles = {
+        table: {
+            style: {
+                maxHeight: "500px",
+                overflow: "auto",
+            },
+        },
+    };
+
     return (
         <>
             {
@@ -226,6 +235,7 @@ export default function StockProductosTable() {
                                             highlightOnHover
                                             fixedHeader={true}
                                             resizable={true}
+                                            customStyles={customStyles}
                                         />
                                     </div>
                                 </>
@@ -239,7 +249,7 @@ export default function StockProductosTable() {
                     border: 2px solid #cecaca;
                     border-radius: 10px;
                     background-color: #fff;
-                    margin: 50px 10px 0 10px;
+                    margin: 20px 10px 10px 10px;
                     box-shadow: 1px 2px 1px grey;
                 }
                 button {

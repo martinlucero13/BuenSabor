@@ -135,10 +135,10 @@ export const TablaPedidos = ({ setPrint }) => {
       sortable: true,
     },
     {
-      name: "Fecha Pedido ",
+      name: "Fecha",
       selector: (row) => row.FECHA,
       center: true,
-      grow: 0.5,
+      grow: 0.1,
       sortable: true,
       format: (row) => {
         const fecha = dayjs(row.FECHA).format("DD/MM/YYYY");
@@ -180,6 +180,20 @@ export const TablaPedidos = ({ setPrint }) => {
       },
     },
     {
+      name: 'Pagado',
+      selector: row => row.PAGADO,
+      center: true,
+      grow: 0.1,
+      format: (row) => {
+        if (row.PAGADO === 0) {
+          return 'NO'
+        }
+        if (row.PAGADO === 1) {
+          return 'SI'
+        }
+      }
+    },
+    {
       name: "Importe Facturado",
       selector: (row) => row.TOTALPEDIDO,
       center: true,
@@ -192,7 +206,7 @@ export const TablaPedidos = ({ setPrint }) => {
       name: "Estado",
       selector: (row) => row.ESTADO,
       center: true,
-      grow: 0.8,
+      grow: 1.0,
       format: (row) => {
         if (row.ESTADO === 0) {
           return (
@@ -225,7 +239,7 @@ export const TablaPedidos = ({ setPrint }) => {
     {
       name: "Acciones",
       selector: (row) => row.ESTADO,
-      grow: 1.2,
+      grow: 1.5,
       center: true,
       format: (row) => {
         return (

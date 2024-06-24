@@ -45,7 +45,7 @@ export default function BtnGoogle() {
         <>
 
             <button onClick={() => iniciarGoogle()} className="w-100 btn btn-lg btn-light mt-2" id='buttonGoogle'>
-                LOGEARSE CON GOOGLE
+                LOGIN WITH GOOGLE
             </button>
         </>
     );

@@ -139,7 +139,7 @@ export default function StockProductosFormIngredientes({ handleShow, dataRow }) 
                     </section>
 
                     <section className={transition ? "element-hidden" : "element"}>
-                        <label>Cantidad</label>
+                        <label>Cantidad </label>
                         <input onChange={handleChangeForm} value={formData.cantidad} type="number" name="cantidad" style={{ textAlign: "right" }} />
                     </section>
                     <section>
