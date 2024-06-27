@@ -114,12 +114,12 @@ export default function TipoVino({ vino, filter, precioOrden, setOpen }) {
             </Modal>
             {<div>
                 <form onSubmit={handleVerifiy}>
-                    <div style={{ height: '230px', marginBottom: '5px', display: 'inline-block', position: 'relative' }}>
+                    <div style={{ height: '230px', marginBottom: '5px', display: 'inline-block', position: 'relative' }} id="ContenedorImg">
                         <Image
                             onClick={() => handleModal(true, vino.descripcion, vino.denominacion)}
                             src={url}
                             alt=''
-                            style={{ borderRadius: '20px', marginTop: '2px' }}
+                            style={{ borderRadius: '20px', marginTop: '2px', cursor: 'pointer' }}
                             //onError={handleError}
                             width={220}
                             height={230}
@@ -173,6 +173,12 @@ export default function TipoVino({ vino, filter, precioOrden, setOpen }) {
             /* form img:hover{
                 transform: scale(1.1); 
             } */
+            #ContenedorImg{
+                transition: transform 0.3s ease;
+            }
+           #ContenedorImg:hover{
+                transform: scale(1.05); 
+           }
             .buttonAdd{
                 margin: 20px 0;
                 padding: 5px;

@@ -11,7 +11,7 @@ import Cookies from 'js-cookie'
 import api from "../src/Services/apiServices"
 
 export default function EleccionMarcaVino() {
-    const { marca, setRetiro, retiro } = useContext(UtilityContext)
+    const { marca, setMarca, setRetiro, retiro } = useContext(UtilityContext)
     const { checkSession } = useUser()
     const { user } = useContext(UserContext)
     const [open, setOpen] = useState(false)
@@ -40,6 +40,7 @@ export default function EleccionMarcaVino() {
             const articulosparse = JSON.parse(articulos)
             if (articulosparse.length === 0) {
                 setOpen(true)
+                setMarca('')
             }
         }
     }
