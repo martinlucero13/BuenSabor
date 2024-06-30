@@ -181,6 +181,15 @@ export default function TablaPedidos() {
       },
     },
     {
+      name: "Descuento Aplicado",
+      selector: (row) => row.DESCUENTO,
+      center: true,
+      format: (row) => {
+        const DESCUENTO = row.DESCUENTO;
+        return DESCUENTO != 0 ? "$" + DESCUENTO.toFixed(2) : "-";
+      },
+    },
+    {
       name: "Estado",
       selector: (row) => row.ESTADO,
       center: true,

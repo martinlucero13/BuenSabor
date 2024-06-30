@@ -1,7 +1,24 @@
+@font-face {
+  font-family: 'fuenteRegular2';
+  src: url('../font/MPLUSRounded1c-Regular.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'fuenteRegular';
+  src: url('../font/Mukta-Regular.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+
 html,
 body {
+  font-family: 'fuenteRegular';
+
+  /*
   font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
-    Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+    Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue,'fuenteRegular', sans-serif;*/
   padding: 0;
   margin: 0;
   height: max-content;

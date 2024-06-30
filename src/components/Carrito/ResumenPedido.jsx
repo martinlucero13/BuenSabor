@@ -3,6 +3,8 @@ import PedidoContext from "../../Context/pedidoContext";
 import UserContext from "../../context/userContext";
 import apiFeco from "../../Services/apiServices";
 import dayjs from "dayjs";
+import { useRouter } from "next/router";
+
 import UtilityContext from "../../Context/utilityContext";
 import { Modal, Form, Button } from "react-bootstrap";
 import Loading from "../Loading/Loading";
@@ -10,17 +12,20 @@ import Cookies from "js-cookie";
 import Image from "next/image";
 
 const INITIAL_STATE = {
-  calle: null,
-  numero: null,
-  localidad: null,
+  idDomicilio: null,
+  calle: "",
+  numero: "",
+  localidad: "",
 };
 
 export default function ResumenPedido() {
   const { user } = useContext(UserContext);
   const { articulos, setArticulos } = useContext(PedidoContext);
-  const { setRetiro, retiro } = useContext(UtilityContext);
+  const [retiro, setRetiro] = useState(0);
+  const [formaPago, setFormaPago] = useState(0);
   const [totalIVA, setTotalIVA] = useState(0);
   const [totalNETO, setTotalNETO] = useState(0);
+  const [descuento, setDescuento] = useState(0);
   const [finalizarPedido, setFinalizarPedido] = useState(true);
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -28,7 +33,7 @@ export default function ResumenPedido() {
   const [transition, setTransition] = useState(false);
   const [formData, setFormData] = useState(INITIAL_STATE);
   const [showConfirm, setShowConfirm] = useState(false);
-  console.log(user);
+  const navigate = useRouter();
 
   function handleChangeForm(event) {
     const { name, value } = event.target;
@@ -39,7 +44,6 @@ export default function ResumenPedido() {
     }
     setFormData({ ...formData, [name]: value });
   }
-
   async function takeNROLEG() {
     const token = Cookies.get("tokenColaboradores");
     const { data } = await apiFeco.post("user", { token });
@@ -48,7 +52,19 @@ export default function ResumenPedido() {
   function handleRetiro(e) {
     const retiro = { retiro: e.target.value };
     setRetiro(retiro);
+    if (e.target.value == 1) {
+      handleCalcularDescuento();
+    } else {
+      setFormaPago(2);
+
+      setDescuento(0);
+    }
     //Cookies.set("retiro", JSON.stringify(retiro), { expires: 1 / 2 });
+  }
+
+  function handleFormaPago(e) {
+    const formaPago2 = e.target.value;
+    setFormaPago(formaPago2);
   }
 
   async function handleLoad() {
@@ -60,6 +76,16 @@ export default function ResumenPedido() {
         { NROLEG }
       );
       setTokenMercadoPago(tokenMercadoPago.data[0].tokenMercadoPago);
+      const { data: getDomicilio } = await apiFeco.post(
+        "clientes/getDomicilio",
+        {
+          idUsuario: user.USNROLEG,
+        }
+      );
+      console.log(getDomicilio.data[0]);
+      setFormData(getDomicilio.data[0]);
+      console.log(formData);
+
       setLoading(false);
     } catch (error) {
       console.error(error);
@@ -80,6 +106,10 @@ export default function ResumenPedido() {
     setTotalNETO(totalesNETO.toFixed(2));
   }
 
+  function handleCalcularDescuento() {
+    setDescuento(((totalNETO * 10) / 100).toFixed(2));
+  }
+
   useEffect(async () => {
     handleLoad();
   }, []);
@@ -87,6 +117,12 @@ export default function ResumenPedido() {
   useEffect(() => {
     totales();
   }, [articulos]);
+
+  useEffect(() => {
+    if (retiro.retiro === "1") {
+      handleCalcularDescuento();
+    }
+  }, [totalNETO]);
 
   useEffect(() => {
     if (totalIVA > user.credito) {
@@ -103,6 +139,8 @@ export default function ResumenPedido() {
 
   async function handleSubmit(e) {
     e.preventDefault();
+    setShowConfirm(false);
+
     setLoading(true);
     setOpen(true);
     const dataPedidoRegalo = [...articulos];
@@ -123,12 +161,15 @@ export default function ResumenPedido() {
         //tipPed,
         //origen,
         //totalIVA: Number(totalIVA),
-        totalNETO: Number(totalNETO),
+        subtotal: Number(totalNETO),
+        descuento: Number(descuento),
+        totalNETO: Number(totalNETO - descuento),
         legajo: legajo,
         formaPago: 1,
         //impuesto: Number(impuesto.toFixed(2)),
         fecha,
         hora,
+        domicilio: retiro.retiro === "2" ? formData.idDomicilio : null,
         //CONDICIONPAGO,
         //EQUI_LIT: Math.round(equivalencia.EQUI_LIT),
         //EQUI_PESO: Math.round(equivalencia.EQUI_PESO),
@@ -141,7 +182,9 @@ export default function ResumenPedido() {
         dataPedido,
       });
       if (pedido.data === 1) {
-        alert("Su pedido fue realizado");
+        navigate.push("/pedidos");
+
+        //alert("Su pedido fue realizado");
         setOpen(false);
         setArticulos([]);
       } else {
@@ -207,8 +250,20 @@ export default function ResumenPedido() {
   async function handlePagarMercadoPagoClick(e) {
     e.preventDefault();
     if (retiro !== null) {
+      setShowConfirm(false);
+
       setLoading(true);
       setOpen(true);
+      if (retiro.retiro === "2") {
+        const { data: saveReintegrate } = await api.post(
+          "clientes/editDomicilio",
+          { fromData: dataToSend }
+        );
+      }
+      if (saveReintegrate.statusCode !== 200) {
+        alert("Algo fallo en el cambio de domicilio");
+        return;
+      }
       const dataPedidoRegalo = [...articulos];
       const legajo = String(user.USNROLEG);
       //const CONDICIONPAGO = verCondicion(articulos[0])
@@ -224,9 +279,12 @@ export default function ResumenPedido() {
           ...articulo,
           cantidad: articulo.cantidad,
           retiro: retiro.retiro,
-          totalNETO: Number(totalNETO),
+          subtotal: Number(totalNETO),
+          descuento: Number(descuento),
+          totalNETO: Number(totalNETO - descuento),
           formaPago: 2,
           legajo: legajo,
+          domicilio: retiro.retiro === "2" ? formData.idDomicilio : null,
           fecha,
           hora,
         };
@@ -259,7 +317,7 @@ export default function ResumenPedido() {
         items: [
           {
             title: "Mi Pedido",
-            unit_price: parseFloat(totalNETO),
+            unit_price: parseFloat((totalNETO - descuento).toFixed(2)),
             quantity: 1,
           },
         ],
@@ -302,36 +360,115 @@ export default function ResumenPedido() {
   return (
     <>
       <div></div>
-      <form onSubmit={handleSubmit}>
-        <h5>Resumen del pedido</h5>
-        <Form id="form-entrega">
-          <div id="form-retiro-local">
-            <Form.Check
-              type="radio"
-              id="retiro-local"
-              name="forma-entrega"
-              label="Retiro Local"
-              value="1"
-              checked={retiro.retiro == 1 ? true : false}
-              onChange={handleRetiro}
-            />
-          </div>
-          <div id="form-retiro-dom">
-            <Form.Check
-              type="radio"
-              id="domicilio"
-              name="forma-entrega"
-              label="Recibir en Domicilio"
-              value="2"
-              checked={retiro.retiro == 2 ? true : false}
-              onChange={handleRetiro}
-            />
-          </div>
-        </Form>
-        <p>
-          TOTAL: <span>${totalNETO} ARS </span>
+      <form onSubmit={handlePagaClick}>
+        <p className="separator">
+          SUBTOTAL: <span>${totalNETO} ARS </span>
         </p>
+        <p className="separator">
+          DESCUENTO:{" "}
+          <span>{descuento != 0 ? "$" + descuento + " ARS" : "-"}</span>
+        </p>
+        <p className="separator">
+          <span>TOTAL:</span>{" "}
+          <span>${(totalNETO - descuento).toFixed(2)} ARS </span>
+        </p>
+        <hr className="straight-line" />
+        <p>Seleccionar:</p>
+        <div className="form-retiro">
+          <Form.Check
+            required
+            type="radio"
+            id="retiro-local"
+            name="forma-entrega"
+            label="Retiro Local 10% OFF"
+            value="1"
+            checked={retiro.retiro == 1 ? true : false}
+            onChange={handleRetiro}
+          />
+        </div>
+        <div className="form-retiro">
+          <Form.Check
+            required
+            type="radio"
+            id="domicilio"
+            name="forma-entrega"
+            label="Recibir en Domicilio"
+            value="2"
+            checked={retiro.retiro == 2 ? true : false}
+            onChange={handleRetiro}
+          />
+        </div>
+        {retiro.retiro == "2" ? (
+          <>
+            <br />
+            <section className={transition ? "element-hidden" : "element"}>
+              <label>Calle:</label>
+              <input
+                required
+                placeholder="calle"
+                maxLength={200}
+                onChange={handleChangeForm}
+                value={formData.calle}
+                type="text"
+                name="calle"
+              />
+            </section>
+            <section className={transition ? "element-hidden" : "element"}>
+              <label>N° Calle:</label>
+              <input
+                required
+                placeholder="n° calle"
+                maxLength={200}
+                onChange={handleChangeForm}
+                value={formData.numero}
+                type="number"
+                min={1}
+                name="numero"
+              />
+            </section>
+            <section className={transition ? "element-hidden" : "element"}>
+              <label>Localidad:</label>
+              <input
+                required
+                placeholder="localidad"
+                maxLength={200}
+                onChange={handleChangeForm}
+                value={formData.localidad}
+                type="text"
+                name="localidad"
+              />
+            </section>
+          </>
+        ) : null}
+        <hr className="straight-line" />
+        <p>Forma de pago:</p>
+        {retiro.retiro != "2" ? (
+          <div className="form-retiro">
+            <Form.Check
+              required
+              type="radio"
+              label="Efectivo"
+              id="efectivo"
+              name="forma-pago"
+              value="1"
+              checked={formaPago == 1 ? true : false}
+              onChange={handleFormaPago}
+            />
+          </div>
+        ) : null}
 
+        <div className="form-retiro">
+          <Form.Check
+            required
+            type="radio"
+            label="Mercado Pago"
+            id="mercado-pago"
+            name="forma-pago"
+            value="2"
+            checked={formaPago == 2 ? true : false}
+            onChange={handleFormaPago}
+          />
+        </div>
         {articulos[0].tipPed === "SB" && (
           <p style={{ fontSize: "12px" }}>
             (SE REALIZARA UNA NOTA DE CREDITO POR LOS DESCUENTOS)
@@ -341,93 +478,56 @@ export default function ResumenPedido() {
           <strong>Crédito insuficiente para realizar el pedido</strong>
         ) : (
           <>
-            <button
-              id="mercadoPago"
-              onClick={handlePagaClick}
-              style={{
-                display: "flex",
-                alignItems: "center",
-                backgroundColor: "#00b1ea",
-                border: "none",
-                padding: "10px",
-                borderRadius: "20px",
-                cursor: "pointer",
-                justifyContent: "center",
-              }}
-            >
-              <Image
-                src={"/mercado-pago.png"}
-                alt="Mercado Pago"
-                width={25}
-                height={20}
-                style={{ marginRight: "10px" }}
-              />
-              <span style={{ color: "white", fontWeight: "bold" }}>
-                Mercado Pago
-              </span>
-            </button>
-            {retiro.retiro === "1" ? (
-              <button disabled>Finalizar Pedido</button>
-            ) : null}
+            <button>Confirmar Pedido</button>
           </>
         )}
       </form>
-      {retiro.retiro === "2" ? (
-        <form onSubmit={handleSubmit}>
-          <h5>Datos Domicilio</h5>
-          <section className={transition ? "element-hidden" : "element"}>
-            <label>Calle</label>
-            <input
-              required
-              placeholder="calle"
-              maxLength={200}
-              onChange={handleChangeForm}
-              value={formData.calle}
-              type="text"
-              name="nombre"
-            />
-          </section>
-          <section className={transition ? "element-hidden" : "element"}>
-            <label>N° Calle</label>
-            <input
-              required
-              placeholder="n° calle"
-              maxLength={200}
-              onChange={handleChangeForm}
-              value={formData.numero}
-              type="number"
-              min={1}
-              name="nombre"
-            />
-          </section>
-          <section className={transition ? "element-hidden" : "element"}>
-            <label>Localidad</label>
-            <input
-              required
-              placeholder="localidad"
-              maxLength={200}
-              onChange={handleChangeForm}
-              value={formData.localidad}
-              type="text"
-              name="nombre"
-            />
-          </section>
-        </form>
-      ) : null}
+
       <Modal show={showConfirm} onHide={() => setShowConfirm(false)}>
         <Modal.Header closeButton>
           <Modal.Title>Confirmar Pago</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <p>¿Está seguro de que desea continuar con el pago ?</p>
-          <Button variant="secondary" onClick={() => setShowConfirm(false)}>
-            Cancelar
-          </Button>
-          <Button variant="primary" onClick={handlePagarMercadoPagoClick}>
-            Confirmar
-          </Button>
+          <div>
+            {formaPago == 1 ? (
+              <Button variant="danger" onClick={handleSubmit}>
+                Confirmar
+              </Button>
+            ) : (
+              <>
+                <button
+                  id="mercadoPago"
+                  onClick={handlePagarMercadoPagoClick}
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    backgroundColor: "#009EE3",
+                    border: "none",
+                    padding: "10px",
+                    borderRadius: "0px",
+                    cursor: "pointer",
+                    justifyContent: "center",
+                  }}
+                >
+                  <Image
+                    src={"/mercado-pago.png"}
+                    alt="Pagar con Mercado Pago"
+                    width={25}
+                    height={20}
+                    style={{ marginRight: "10px" }}
+                  />
+                  <span style={{ color: "white", fontWeight: "bold" }}>
+                    Pagar con Mercado Pago
+                  </span>
+                </button>
+                <span style={{ color: "#7E849B", fontSize: "14px" }}>
+                  Pagá de forma segura
+                </span>
+              </>
+            )}
+          </div>
         </Modal.Body>
-        <Modal.Footer></Modal.Footer>
       </Modal>
       <Modal show={open} centered>
         <Modal.Body>
@@ -439,6 +539,27 @@ export default function ResumenPedido() {
         </Modal.Body>
       </Modal>
       <style jsx>{`
+        .form-retiro {
+          align-self: start;
+        }
+        .modal-buttons {
+          display: flex;
+          justify-content: center;
+          gap: 10px; /* Espacio entre los botones */
+          margin-top: 20px; /* Separación superior opcional */
+        }
+        section {
+          margin-bottom: 10px;
+        }
+        .separator {
+          display: flex;
+          justify-content: space-between;
+        }
+        input {
+          border-radius: 8px;
+          width: 100%;
+          border: 1px solid black;
+        }
         form {
           display: flex;
           flex-direction: column;
@@ -451,12 +572,13 @@ export default function ResumenPedido() {
           border: solid 2px #cecaca;
           border-radius: 10px;
         }
+
         form p {
-          text-align: center;
-          margin-bottom: 30px;
+          margin: 0px;
         }
+
         form button {
-          margin-top: 50px;
+          margin-top: 20px;
           height: 35px;
           width: 100%;
           background-color: #e11919;
@@ -498,9 +620,6 @@ export default function ResumenPedido() {
           border: none;
           border-radius: 20px;
           transition: 0.3s;
-        }
-        #mercadoPago {
-          background-color: #00b1ea;
         }
       `}</style>
     </>

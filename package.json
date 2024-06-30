@@ -9,6 +9,7 @@
     "start": "next start -p 4000"
   },
   "dependencies": {
+    "antd": "^5.18.2",
     "axios": "0.26.1",
     "bootstrap": "5.2.2",
     "dayjs": "1.11.6",
