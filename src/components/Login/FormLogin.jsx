@@ -1,4 +1,4 @@
-
+import BtnGoogle from './BtnGoogle'
 
 export default function FormLogin({ username, password, handleSubmit, setPassword, setUsername, setShow, setShowRegistr, isLoginLoading }) {
 
@@ -33,7 +33,7 @@ export default function FormLogin({ username, password, handleSubmit, setPasswor
                 <button disabled={isLoginLoading} className="w-100 btn btn-lg btn-light mt-2" id='buttonLogin'>
                     LOGIN
                 </button>
-
+                <BtnGoogle />
             </form>
             <h6 onClick={() => setShow(true)}>¿Olvidaste tu contraseña?</h6>
             <h6 onClick={() => setShowRegistr(true)}>Registrarse</h6>

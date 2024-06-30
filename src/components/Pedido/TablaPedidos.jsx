@@ -8,10 +8,11 @@ import UserContext from "../../context/userContext";
 import Cookies from "js-cookie";
 import { getDataFormat } from "./Helpers";
 import dayjs from "dayjs";
-import { Trash } from "react-bootstrap-icons";
+import { Trash, PrinterFill } from "react-bootstrap-icons";
 import Image from "next/image";
+import { PDFFactura } from "../Print/PDFFactura";
 
-export default function TablaPedidos() {
+export const TablaPedidos = ({ setPrint }) => {
   const { user } = useContext(UserContext);
   const [loading, setLoading] = useState(true);
   const [dataTable, setDataTable] = useState([]);
@@ -111,6 +112,13 @@ export default function TablaPedidos() {
     }
   }
 
+  async function Imprimir(row) {
+    setPrint(true);
+    const doc = PDFFactura(row);
+    doc.save(`Factura-N°${row.nrofac}.pdf`);
+    setPrint(false);
+  }
+
   const columnsTable = [
     {
       name: "N° Pedido",
@@ -127,10 +135,10 @@ export default function TablaPedidos() {
       sortable: true,
     },
     {
-      name: "Fecha Pedido ",
+      name: "Fecha",
       selector: (row) => row.FECHA,
       center: true,
-      grow: 0.5,
+      grow: 0.1,
       sortable: true,
       format: (row) => {
         const fecha = dayjs(row.FECHA).format("DD/MM/YYYY");
@@ -172,6 +180,20 @@ export default function TablaPedidos() {
       },
     },
     {
+      name: "Pagado",
+      selector: (row) => row.PAGADO,
+      center: true,
+      grow: 0.1,
+      format: (row) => {
+        if (row.PAGADO === 0) {
+          return "NO";
+        }
+        if (row.PAGADO === 1) {
+          return "SI";
+        }
+      },
+    },
+    {
       name: "Importe Facturado",
       selector: (row) => row.TOTALPEDIDO,
       center: true,
@@ -193,7 +215,7 @@ export default function TablaPedidos() {
       name: "Estado",
       selector: (row) => row.ESTADO,
       center: true,
-      grow: 0.8,
+      grow: 1.0,
       format: (row) => {
         if (row.ESTADO === 0) {
           return (
@@ -226,7 +248,7 @@ export default function TablaPedidos() {
     {
       name: "Acciones",
       selector: (row) => row.ESTADO,
-      grow: 1,
+      grow: 1.5,
       center: true,
       format: (row) => {
         return (
@@ -283,6 +305,18 @@ export default function TablaPedidos() {
                   />
                 </div>
               ) : null}
+              {row.PAGADO === 1 || row.FORMAPAGO === "1" ? (
+                <div onClick={() => Imprimir(row)}>
+                  <PrinterFill
+                    style={{
+                      color: "grey",
+                      width: "25px",
+                      height: "25px",
+                      cursor: "pointer",
+                    }}
+                  />
+                </div>
+              ) : null}
             </div>
           </>
         );
@@ -319,4 +353,4 @@ export default function TablaPedidos() {
       `}</style>
     </>
   );
-}
+};

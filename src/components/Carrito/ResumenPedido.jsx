@@ -33,6 +33,8 @@ export default function ResumenPedido() {
   const [transition, setTransition] = useState(false);
   const [formData, setFormData] = useState(INITIAL_STATE);
   const [showConfirm, setShowConfirm] = useState(false);
+  const [cerrado, setCerrado] = useState(true);
+
   const navigate = useRouter();
 
   function handleChangeForm(event) {
@@ -93,12 +95,27 @@ export default function ResumenPedido() {
     }
   }
 
+  function tomarHorario() {
+    const now = new Date();
+    const dayOfWeek = now.getDay();
+    const hours = now.getHours();
+    if (dayOfWeek === 0 || dayOfWeek === 6) {
+      if ((hours >= 11 && hours < 15) || (hours >= 20 && hours <= 23)) {
+        setCerrado(false);
+      } else {
+        setCerrado(true);
+      }
+    } else {
+      if (hours >= 20 && hours <= 23) {
+        setCerrado(false);
+      } else {
+        setCerrado(true);
+      }
+    }
+  }
+
   function totales() {
-    let totalesIVA = 0;
     let totalesNETO = 0;
-    /*articulos.forEach(articulo => {
-            totalesIVA += articulo.precioVenta * articulo.cantidad
-        })*/
     articulos.forEach((articulo) => {
       totalesNETO += articulo.precioVenta * articulo.cantidad;
     });
@@ -112,6 +129,7 @@ export default function ResumenPedido() {
 
   useEffect(async () => {
     handleLoad();
+    tomarHorario();
   }, []);
 
   useEffect(() => {
@@ -145,9 +163,6 @@ export default function ResumenPedido() {
     setOpen(true);
     const dataPedidoRegalo = [...articulos];
     const legajo = String(user.USNROLEG);
-    //const CONDICIONPAGO = verCondicion(articulos[0])
-    //const tipPed = articulos[0].tipPed
-    //const impuesto = totalNETO * 0.21
     const hora = dayjs().format("HHmmss");
     const fecha = dayjs().format("DDMMYYYY");
     const origen = selectOrigin();
@@ -158,22 +173,14 @@ export default function ResumenPedido() {
         ...articulo,
         cantidad: articulo.cantidad,
         retiro: retiro.retiro,
-        //tipPed,
-        //origen,
-        //totalIVA: Number(totalIVA),
         subtotal: Number(totalNETO),
         descuento: Number(descuento),
         totalNETO: Number(totalNETO - descuento),
         legajo: legajo,
         formaPago: 1,
-        //impuesto: Number(impuesto.toFixed(2)),
         fecha,
         hora,
         domicilio: retiro.retiro === "2" ? formData.idDomicilio : null,
-        //CONDICIONPAGO,
-        //EQUI_LIT: Math.round(equivalencia.EQUI_LIT),
-        //EQUI_PESO: Math.round(equivalencia.EQUI_PESO),
-        //EQUI_UN: Math.round(equivalencia.EQUI_UN),
       };
     });
     /* console.log(dataPedido) */
@@ -198,18 +205,6 @@ export default function ResumenPedido() {
       alert("Error al realizar su pedido, intente de nuevo en unos minutos");
       setOpen(false);
       setLoading(false);
-    }
-  }
-
-  function verCondicion(articulo) {
-    const date = dayjs().format("YYYY-MM-DD");
-    if (articulo.tipPed === "SB") {
-      /* return '060' */
-      return "065";
-    } else if (date <= "2022-12-30" && date >= "2022-11-18") {
-      return "007";
-    } else {
-      return "003";
     }
   }
 
@@ -266,9 +261,6 @@ export default function ResumenPedido() {
       }
       const dataPedidoRegalo = [...articulos];
       const legajo = String(user.USNROLEG);
-      //const CONDICIONPAGO = verCondicion(articulos[0])
-      //const tipPed = articulos[0].tipPed
-      //const impuesto = totalNETO * 0.21
       const hora = dayjs().format("HHmmss");
       const fecha = dayjs().format("DDMMYYYY");
       const origen = selectOrigin();
@@ -359,185 +351,196 @@ export default function ResumenPedido() {
 
   return (
     <>
-      <div></div>
-      <form onSubmit={handlePagaClick}>
-        <p className="separator">
-          SUBTOTAL: <span>${totalNETO} ARS </span>
-        </p>
-        <p className="separator">
-          DESCUENTO:{" "}
-          <span>{descuento != 0 ? "$" + descuento + " ARS" : "-"}</span>
-        </p>
-        <p className="separator">
-          <span>TOTAL:</span>{" "}
-          <span>${(totalNETO - descuento).toFixed(2)} ARS </span>
-        </p>
-        <hr className="straight-line" />
-        <p>Seleccionar:</p>
-        <div className="form-retiro">
-          <Form.Check
-            required
-            type="radio"
-            id="retiro-local"
-            name="forma-entrega"
-            label="Retiro Local 10% OFF"
-            value="1"
-            checked={retiro.retiro == 1 ? true : false}
-            onChange={handleRetiro}
-          />
-        </div>
-        <div className="form-retiro">
-          <Form.Check
-            required
-            type="radio"
-            id="domicilio"
-            name="forma-entrega"
-            label="Recibir en Domicilio"
-            value="2"
-            checked={retiro.retiro == 2 ? true : false}
-            onChange={handleRetiro}
-          />
-        </div>
-        {retiro.retiro == "2" ? (
-          <>
-            <br />
-            <section className={transition ? "element-hidden" : "element"}>
-              <label>Calle:</label>
-              <input
+      {cerrado ? (
+        <form>
+          <strong>
+            Horario de atención de lunes a domingos de 20:00 a 12:00. Sábados y
+            domingos de 11:00 a 15:00
+          </strong>
+        </form>
+      ) : (
+        <>
+          <div></div>
+          <form onSubmit={handlePagaClick}>
+            <p className="separator">
+              SUBTOTAL: <span>${totalNETO} ARS </span>
+            </p>
+            <p className="separator">
+              DESCUENTO:{" "}
+              <span>{descuento != 0 ? "$" + descuento + " ARS" : "-"}</span>
+            </p>
+            <p className="separator">
+              <span>TOTAL:</span>{" "}
+              <span>${(totalNETO - descuento).toFixed(2)} ARS </span>
+            </p>
+            <hr className="straight-line" />
+            <p>Seleccionar:</p>
+            <div className="form-retiro">
+              <Form.Check
                 required
-                placeholder="calle"
-                maxLength={200}
-                onChange={handleChangeForm}
-                value={formData.calle}
-                type="text"
-                name="calle"
+                type="radio"
+                id="retiro-local"
+                name="forma-entrega"
+                label="Retiro Local 10% OFF"
+                value="1"
+                checked={retiro.retiro == 1 ? true : false}
+                onChange={handleRetiro}
               />
-            </section>
-            <section className={transition ? "element-hidden" : "element"}>
-              <label>N° Calle:</label>
-              <input
+            </div>
+            <div className="form-retiro">
+              <Form.Check
                 required
-                placeholder="n° calle"
-                maxLength={200}
-                onChange={handleChangeForm}
-                value={formData.numero}
-                type="number"
-                min={1}
-                name="numero"
+                type="radio"
+                id="domicilio"
+                name="forma-entrega"
+                label="Recibir en Domicilio"
+                value="2"
+                checked={retiro.retiro == 2 ? true : false}
+                onChange={handleRetiro}
               />
-            </section>
-            <section className={transition ? "element-hidden" : "element"}>
-              <label>Localidad:</label>
-              <input
-                required
-                placeholder="localidad"
-                maxLength={200}
-                onChange={handleChangeForm}
-                value={formData.localidad}
-                type="text"
-                name="localidad"
-              />
-            </section>
-          </>
-        ) : null}
-        <hr className="straight-line" />
-        <p>Forma de pago:</p>
-        {retiro.retiro != "2" ? (
-          <div className="form-retiro">
-            <Form.Check
-              required
-              type="radio"
-              label="Efectivo"
-              id="efectivo"
-              name="forma-pago"
-              value="1"
-              checked={formaPago == 1 ? true : false}
-              onChange={handleFormaPago}
-            />
-          </div>
-        ) : null}
+            </div>
+            {retiro.retiro == "2" ? (
+              <>
+                <br />
+                <section className={transition ? "element-hidden" : "element"}>
+                  <label>Calle:</label>
+                  <input
+                    required
+                    placeholder="calle"
+                    maxLength={200}
+                    onChange={handleChangeForm}
+                    value={formData.calle}
+                    type="text"
+                    name="calle"
+                  />
+                </section>
+                <section className={transition ? "element-hidden" : "element"}>
+                  <label>N° Calle:</label>
+                  <input
+                    required
+                    placeholder="n° calle"
+                    maxLength={200}
+                    onChange={handleChangeForm}
+                    value={formData.numero}
+                    type="number"
+                    min={1}
+                    name="numero"
+                  />
+                </section>
+                <section className={transition ? "element-hidden" : "element"}>
+                  <label>Localidad:</label>
+                  <input
+                    required
+                    placeholder="localidad"
+                    maxLength={200}
+                    onChange={handleChangeForm}
+                    value={formData.localidad}
+                    type="text"
+                    name="localidad"
+                  />
+                </section>
+              </>
+            ) : null}
+            <hr className="straight-line" />
+            <p>Forma de pago:</p>
+            {retiro.retiro != "2" ? (
+              <div className="form-retiro">
+                <Form.Check
+                  required
+                  type="radio"
+                  label="Efectivo"
+                  id="efectivo"
+                  name="forma-pago"
+                  value="1"
+                  checked={formaPago == 1 ? true : false}
+                  onChange={handleFormaPago}
+                />
+              </div>
+            ) : null}
 
-        <div className="form-retiro">
-          <Form.Check
-            required
-            type="radio"
-            label="Mercado Pago"
-            id="mercado-pago"
-            name="forma-pago"
-            value="2"
-            checked={formaPago == 2 ? true : false}
-            onChange={handleFormaPago}
-          />
-        </div>
-        {articulos[0].tipPed === "SB" && (
-          <p style={{ fontSize: "12px" }}>
-            (SE REALIZARA UNA NOTA DE CREDITO POR LOS DESCUENTOS)
-          </p>
-        )}
-        {!finalizarPedido ? (
-          <strong>Crédito insuficiente para realizar el pedido</strong>
-        ) : (
-          <>
-            <button>Confirmar Pedido</button>
-          </>
-        )}
-      </form>
-
-      <Modal show={showConfirm} onHide={() => setShowConfirm(false)}>
-        <Modal.Header closeButton>
-          <Modal.Title>Confirmar Pago</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <p>¿Está seguro de que desea continuar con el pago ?</p>
-          <div>
-            {formaPago == 1 ? (
-              <Button variant="danger" onClick={handleSubmit}>
-                Confirmar
-              </Button>
+            <div className="form-retiro">
+              <Form.Check
+                required
+                type="radio"
+                label="Mercado Pago"
+                id="mercado-pago"
+                name="forma-pago"
+                value="2"
+                checked={formaPago == 2 ? true : false}
+                onChange={handleFormaPago}
+              />
+            </div>
+            {articulos[0].tipPed === "SB" && (
+              <p style={{ fontSize: "12px" }}>
+                (SE REALIZARA UNA NOTA DE CREDITO POR LOS DESCUENTOS)
+              </p>
+            )}
+            {!finalizarPedido ? (
+              <strong>Crédito insuficiente para realizar el pedido</strong>
             ) : (
               <>
-                <button
-                  id="mercadoPago"
-                  onClick={handlePagarMercadoPagoClick}
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    backgroundColor: "#009EE3",
-                    border: "none",
-                    padding: "10px",
-                    borderRadius: "0px",
-                    cursor: "pointer",
-                    justifyContent: "center",
-                  }}
-                >
-                  <Image
-                    src={"/mercado-pago.png"}
-                    alt="Pagar con Mercado Pago"
-                    width={25}
-                    height={20}
-                    style={{ marginRight: "10px" }}
-                  />
-                  <span style={{ color: "white", fontWeight: "bold" }}>
-                    Pagar con Mercado Pago
-                  </span>
-                </button>
-                <span style={{ color: "#7E849B", fontSize: "14px" }}>
-                  Pagá de forma segura
-                </span>
+                <button>Confirmar Pedido</button>
               </>
             )}
-          </div>
-        </Modal.Body>
-      </Modal>
-      <Modal show={open} centered>
-        <Modal.Body>
-          <div>
-            {loading && (
-              <Loading message="Guardando pedido..." marginLeft={-10} />
-            )}
-          </div>
-        </Modal.Body>
-      </Modal>
+          </form>
+          <Modal show={showConfirm} onHide={() => setShowConfirm(false)}>
+            <Modal.Header closeButton>
+              <Modal.Title>Confirmar Pago</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+              <p>¿Está seguro de que desea continuar con el pago ?</p>
+              <div>
+                {formaPago == 1 ? (
+                  <Button variant="danger" onClick={handleSubmit}>
+                    Confirmar
+                  </Button>
+                ) : (
+                  <>
+                    <button
+                      id="mercadoPago"
+                      onClick={handlePagarMercadoPagoClick}
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        backgroundColor: "#009EE3",
+                        border: "none",
+                        padding: "10px",
+                        borderRadius: "0px",
+                        cursor: "pointer",
+                        justifyContent: "center",
+                      }}
+                    >
+                      <Image
+                        src={"/mercado-pago.png"}
+                        alt="Pagar con Mercado Pago"
+                        width={25}
+                        height={20}
+                        style={{ marginRight: "10px" }}
+                      />
+                      <span style={{ color: "white", fontWeight: "bold" }}>
+                        Pagar con Mercado Pago
+                      </span>
+                    </button>
+                    <span style={{ color: "#7E849B", fontSize: "14px" }}>
+                      Pagá de forma segura
+                    </span>
+                  </>
+                )}
+              </div>
+            </Modal.Body>
+          </Modal>
+          <Modal show={open} centered>
+            <Modal.Body>
+              <div>
+                {loading && (
+                  <Loading message="Guardando pedido..." marginLeft={-10} />
+                )}
+              </div>
+            </Modal.Body>
+          </Modal>{" "}
+        </>
+      )}
+
       <style jsx>{`
         .form-retiro {
           align-self: start;
@@ -596,7 +599,7 @@ export default function ResumenPedido() {
         }
         form strong {
           text-align: center;
-          margin-top: 65px;
+
           color: red;
         }
         form h5 {

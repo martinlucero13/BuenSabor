@@ -9,6 +9,7 @@ import Cookies from "js-cookie";
 import { getDataFormat } from './Helpers'
 import dayjs from "dayjs";
 import { CheckSquareFill } from "react-bootstrap-icons";
+import { Modal } from "react-bootstrap"
 
 const INITIAL_STATE = {
     dateDesde: '',
@@ -22,6 +23,8 @@ export default function TablaPedidosDelivery() {
     const navigate = useRouter()
     const [formData, setFormData] = useState(INITIAL_STATE)
     const [disabledSend, setDisabledSend] = useState(true)
+    const [open, setOpen] = useState(false)
+    const [dataRow, setDataRow] = useState()
 
     /*useEffect(async () => {
         handleLoad()
@@ -48,6 +51,11 @@ export default function TablaPedidosDelivery() {
             const { data: pedidoEntregado } = await apiFeco.post('vinos/pedidoEntregado', { idPedido })
             handleLoad()
         }
+    }
+
+    async function handleDetalle(row) {
+        setOpen(true)
+        setDataRow(row)
     }
 
     function handleChangeForm(event) {
@@ -169,46 +177,122 @@ export default function TablaPedidosDelivery() {
                         <CheckSquareFill style={{ color: 'green', width: '25px', height: '25px', cursor: 'pointer' }} />
                     </div>
                 } else if (row.ESTADO === 4) {
-                    return 'Si'
+                    return 'SI'
                 }
                 else {
                     return 'NO'
                 }
             }
-        }
+        },
+        {
+            name: '',
+            center: true,
+            cell: (row) => {
+                return (
+                    <div onClick={() => handleDetalle(row)}>
+                        <button>Domicilio</button>
+                        <style jsx>{`
+                        button {
+                        margin: 10px;
+                        background-color: #E11919;
+                        color: white;
+                        border-radius: 20px;
+                        font-size: 15px;
+                        transition: 0.5s;
+                        padding: 10px 1px 10px 1px;
+                        border: none;
+                        width: 100px;
+                        text-transform:uppercase;
+                        }
+                        button:hover {
+                            color: black;
+                            background-color: #FF0000;
+                        }
+                    `}</style>
+                    </div>
+                );
+            }
+        },
     ]
 
     return (
         <>
-            <div className="barraNav">
-                <header>
-                    <h1>Pedidos Delivery</h1>
-                    <label>Desde</label>
-                    <input onChange={handleChangeForm} value={formData.dateDesde} type="date" name="dateDesde" />
+            <Modal
+                show={open}
+                aria-labelledby="contained-modal-title-vcenter"
+                centered
+            >
 
-                    <label>Hasta</label>
-                    <input onChange={handleChangeForm} value={formData.dateHasta} type="date" name="dateHasta" />
+                <div className="modaldiv">
+                    <h3 className="titulomodal">Domicilio Pedido: {dataRow ? dataRow.idPedido : ''}</h3>
+                    <div>
+                        <button className="botonModal" onClick={() => setOpen(false)}>X</button>
+                    </div>
+                </div>
 
-                    <button onClick={handleLoad} disabled={disabledSend} className={disabledSend || loading ? 'button_disabled' : 'button'}>Buscar</button>
-                </header>
-            </div>
-            <div>
-                <DataTable
-                    data={dataTable}
-                    columns={columnsTable}
-                    noDataComponent={noData}
-                    expandableRows
-                    expandableRowsComponent={ExpandedComponent}
-                    pagination
-                    paginationComponentOptions={paginationOptions}
-                    //defaultSortFieldId={1}
-                    //defaultSortAsc={false}
-                    progressPending={loading}
-                    progressComponent={<Loading message='Cargando pedidos...' fontSize='20' />}
-                />
-            </div>
+                <Modal.Body>
+                    <p>Direccion: {dataRow ? dataRow.DOMICILIO : ''}</p>
+                    <p>Localidad: {dataRow ? dataRow.LOCALIDAD : ''}</p>
+                </Modal.Body>
+            </Modal>
+
+            {<>
+                <div className="barraNav">
+                    <header>
+                        <h1>Pedidos Delivery</h1>
+                        <label>Desde</label>
+                        <input onChange={handleChangeForm} value={formData.dateDesde} type="date" name="dateDesde" />
+
+                        <label>Hasta</label>
+                        <input onChange={handleChangeForm} value={formData.dateHasta} type="date" name="dateHasta" />
+
+                        <button onClick={handleLoad} disabled={disabledSend} className={disabledSend || loading ? 'button_disabled' : 'button'}>Buscar</button>
+                    </header>
+                </div>
+                <div className="divTable">
+                    <DataTable
+                        data={dataTable}
+                        columns={columnsTable}
+                        noDataComponent={noData}
+                        expandableRows
+                        expandableRowsComponent={ExpandedComponent}
+                        pagination
+                        paginationComponentOptions={paginationOptions}
+                        //defaultSortFieldId={1}
+                        //defaultSortAsc={false}
+                        progressPending={loading}
+                        progressComponent={<Loading message='Cargando pedidos...' fontSize='20' />}
+                    />
+                </div>
+            </>
+            }
             <style jsx>{`
-                div{
+                .botonModal {
+                    margin: 5px;
+                    background-color: #E11919;
+                    color: white;
+                    border-radius: 100%;
+                    font-size: 15px;
+                    transition: 0.5s;
+                    padding: 5px;
+                    border: none;
+                    width: 30px;
+                    text-transform:uppercase;
+                }
+                .botonModal:hover {
+                    color: black;
+                    background-color: #FF0000;
+                }
+                .modaldiv{
+                    display:flex;
+                    justify-content: space-between;
+                    border-bottom: 1px solid gray;
+                    padding: 10px;
+                }
+                .titulomodal{
+                    margin: 5px;
+                }
+                .divTable{
                     margin: 40px 15px 5px 15px;
                     box-shadow: 1px 1px 4px black;
                     border-top-left-radius: 15px;

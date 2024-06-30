@@ -11,7 +11,7 @@ import Cookies from "js-cookie";
 import api from "../src/Services/apiServices";
 
 export default function EleccionMarcaVino() {
-  const { marca, setMarca } = useContext(UtilityContext);
+  const { marca, setMarca, setRetiro, retiro } = useContext(UtilityContext);
   const { checkSession } = useUser();
   const { user } = useContext(UserContext);
   const [open, setOpen] = useState(false);
@@ -40,6 +40,7 @@ export default function EleccionMarcaVino() {
       const articulosparse = JSON.parse(articulos);
       if (articulosparse.length === 0) {
         setOpen(true);
+        setMarca("");
       }
     }
   }
@@ -54,15 +55,46 @@ export default function EleccionMarcaVino() {
       const { data: getRubroProductosMenu } = await api.post(
         "rubroProductos/getRubroProductosMenu"
       );
-      setMarca("");
       setMarcas([...getRubroProductosMenu.data, todos]);
     } catch (error) {
       setMarcas();
     }
   }
 
+  function handleRetiro(e) {
+    const retiro = { retiro: e.target.value };
+    setRetiro(retiro);
+    setDisabled(false);
+    Cookies.set("retiro", JSON.stringify(retiro), { expires: 1 / 2 });
+  }
+
   return (
     <>
+      <Modal
+        show={open}
+        aria-labelledby="contained-modal-title-vcenter"
+        centered
+      >
+        <Modal.Body>
+          <div>
+            <h4>Tipo Pedido:</h4>
+            <select onChange={handleRetiro} defaultValue="">
+              <option value="" disabled>
+                Seleccione lugar de retiro
+              </option>
+              <option value="1">Retiro Por Sucursal</option>
+              <option value="2">Llevar a Domicilio</option>
+            </select>
+            <button
+              disabled={disabled}
+              className={disabled ? "disabledButton" : "buttonRetira"}
+              onClick={() => setOpen(false)}
+            >
+              Seleccionar
+            </button>
+          </div>
+        </Modal.Body>
+      </Modal>
       {marca ? <Vinos marcas={marcas} /> : <Marcas marcas={marcas} />}
       <style jsx>{`
         div {

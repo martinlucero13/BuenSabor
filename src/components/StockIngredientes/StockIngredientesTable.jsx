@@ -11,6 +11,13 @@ import Loading from "../Loading/Loading"
 const Columns = (handleDelete, handleEdit, handleComprar) => (
     [
         {
+            name: 'Rubro',
+            selector: row => row.denominacion,
+            wrap: true,
+            sortable: true,
+            center: true,
+        },
+        {
             name: 'Nombre',
             selector: row => row.nomInsumo,
             wrap: true,
@@ -58,13 +65,6 @@ const Columns = (handleDelete, handleEdit, handleComprar) => (
                     return "-"
                 }
             },
-            wrap: true,
-            sortable: true,
-            center: true,
-        },
-        {
-            name: 'Rubro',
-            selector: row => row.denominacion,
             wrap: true,
             sortable: true,
             center: true,
@@ -182,6 +182,15 @@ export default function StockIngredientesTable() {
 
     const noData = <strong style={{ color: 'red', textAlign: 'center' }}>No se encontraron ingredientes</strong>
 
+    const customStyles = {
+        table: {
+            style: {
+                maxHeight: "500px",
+                overflow: "auto",
+            },
+        },
+    };
+
     return (
         <>
             {
@@ -215,6 +224,7 @@ export default function StockIngredientesTable() {
                                         highlightOnHover
                                         fixedHeader={true}
                                         resizable={true}
+                                        customStyles={customStyles}
                                     />
                                 </div>
                             </>
@@ -228,7 +238,7 @@ export default function StockIngredientesTable() {
                     border: 2px solid #cecaca;
                     border-radius: 10px;
                     background-color: #fff;
-                    margin: 50px 10px 0 10px;
+                    margin: 20px 10px 10px 10px;
                     box-shadow: 1px 2px 1px grey;
                 }
                 button {
