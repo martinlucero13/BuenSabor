@@ -73,11 +73,12 @@ export default function EmpleadosForm({ handleShow }) {
     }
 
     function handleCheck() {
-        if ((Object.values(formData).includes('')) || (Object.values(formData).includes(0))) {
-            setDisabledSend(true)
-            return
+        const values = Object.values(formData);
+        if (values.includes('') || values.some(value => value < 0)) {
+            setDisabledSend(true);
+            return;
         }
-        setDisabledSend(false)
+        setDisabledSend(false);
     }
 
     return (

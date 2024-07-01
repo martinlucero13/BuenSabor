@@ -75,11 +75,12 @@ export default function ClientesEdit({ handleShow, datoRow }) {
     }
 
     function handleCheck() {
-        if ((Object.values(formData).includes(''))) {
-            setDisabledSend(true)
-            return
+        const values = Object.values(formData);
+        if (values.includes('') || values.some(value => value < 0)) {
+            setDisabledSend(true);
+            return;
         }
-        setDisabledSend(false)
+        setDisabledSend(false);
     }
 
     return (

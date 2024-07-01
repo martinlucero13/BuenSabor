@@ -1,6 +1,6 @@
 import { useEffect, useContext } from 'react'
 import useUser from '../src/Hooks/useUser'
-import TablaPedidosCajero from '../src/components/PedidosCocina/PedidosCocinaTable'
+import PedidosCocinaTable from '../src/components/PedidosCocina/PedidosCocinaTable'
 import UserContext from '../src/context/userContext'
 import { useRouter } from 'next/router'
 
@@ -21,7 +21,7 @@ export default function PedidosCocina() {
 
     return (
         <>
-            <TablaPedidosCajero />
+            <PedidosCocinaTable />
         </>
     )
 }

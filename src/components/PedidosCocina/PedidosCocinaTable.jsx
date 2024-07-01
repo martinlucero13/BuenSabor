@@ -94,16 +94,20 @@ const Columns = (handleAgregar, handleCambiarEstado, handleDetalle) => (
             center: true,
             cell: (row) => {
                 let btn = ''
-                if (row.estado === 0) {
+                let terminar = false
+                /*if (row.estado === 0) {
                     btn = 'Confirmar'
-                } else if (row.estado === 1) {
+                } else*/
+                if (row.estado === 1) {
                     btn = 'Terminar'
+                    terminar = true
                 }
                 return (
-                    <>
-                        <div onClick={() => handleAgregar(row)}>
-                            <button>+ 10 min</button>
-                            <style jsx>{`
+                    <>{terminar
+                        ? <>
+                            <div onClick={() => handleAgregar(row)}>
+                                <button>+ 10 min</button>
+                                <style jsx>{`
                                 button {
                                 margin: 10px;
                                 background-color: #E11919;
@@ -121,10 +125,10 @@ const Columns = (handleAgregar, handleCambiarEstado, handleDetalle) => (
                                     background-color: #FF0000;
                                 }
                             `}</style>
-                        </div>
-                        <div onClick={() => handleCambiarEstado(row)}>
-                            <button>{btn}</button>
-                            <style jsx>{`
+                            </div>
+                            <div onClick={() => handleCambiarEstado(row)}>
+                                <button>{btn}</button>
+                                <style jsx>{`
                                 button {
                                 margin: 10px;
                                 background-color: #E11919;
@@ -142,7 +146,8 @@ const Columns = (handleAgregar, handleCambiarEstado, handleDetalle) => (
                                     background-color: #FF0000;
                                 }
                             `}</style>
-                        </div>
+                            </div>
+                        </> : <div></div>}
                     </>
                 );
             }
@@ -229,7 +234,7 @@ export default function PedidosCocinaTable() {
                     /> : <>
                         <div>
                             <header>
-                                <h1>Stock Productos</h1>
+                                <h1>Pedidos</h1>
                                 <button onClick={handleLoad} className='button'>Actualizar</button>
                             </header>
                         </div>

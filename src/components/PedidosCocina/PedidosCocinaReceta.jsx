@@ -53,24 +53,24 @@ export default function PedidosCocinaReceta({ handleShow, dataRow }) {
     const noData = <strong style={{ color: 'red', textAlign: 'center' }}>No se encontraron ingredientes</strong>
     return (
         <>
-            <main>
-                <div>
+            <main className="main">
+                <div className="container">
                     <header>
                         <h2>Receta De {dataRow.denominacion}</h2>
                         <button onClick={handleShow} className='button'>Volver</button>
                     </header>
-                </div>
-                <div className="receta">
-                    <Image
-                        src={`/${dataRow.imagen}.jpg`}
-                        alt=''
-                        style={{ borderRadius: '20px', marginTop: '2px' }}
-                        //onError={handleError}
-                        width={220}
-                        height={230}
-                    />
-                    <p>{dataRow.receta}</p>
-
+                    <div className="receta">
+                        <div className="image-container">
+                            <Image
+                                src={`/${dataRow.imagen}.jpg`}
+                                alt=''
+                                style={{ borderRadius: '20px', objectFit: 'cover' }}
+                                width={240}
+                                height={240}
+                            />
+                        </div>
+                        <p>{dataRow.receta}</p>
+                    </div>
                     <DataTable
                         columns={Columns()}
                         data={dataTable}
@@ -78,49 +78,73 @@ export default function PedidosCocinaReceta({ handleShow, dataRow }) {
                         progressComponent={<Loading message='Cargando datos...' marginLeft={20} />}
                         noDataComponent={noData}
                         highlightOnHover
-                        fixedHeader={true}
-                        resizable={true}
+                        fixedHeader
+                        resizable
                     />
                 </div>
             </main>
             <style jsx>{`
-                header {
-                    display:flex;
-                    justify-content: space-between;
+            .main {
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    width: 100%;
+                    height: 100%;
                 }
-                div {
+                .container {
                     border: 2px solid #cecaca;
                     border-radius: 10px;
                     background-color: #fff;
-                    margin: 50px 10px 0 10px;
+                    margin: 10px;
                     box-shadow: 1px 2px 1px grey;
+                    padding: 20px;
                 }
-                button {
-                    margin: 15px;
+                header {
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    margin-bottom: 20px;
+                }
+                .button {
                     background-color: #E11919;
                     color: white;
                     border-radius: 20px;
                     font-size: 17px;
                     transition: 0.5s;
-                    padding: 5px;
+                    padding: 10px;
                     border: none;
                     width: 150px;
-                    text-transform:uppercase;
+                    text-transform: uppercase;
                 }
-                button:hover {
+                .button:hover {
                     color: black;
                     background-color: #FF0000;
                 }
                 h2, p {
-                    margin:15px;
+                    margin: 15px 0;
                 }
-                .receta{
-                    display:flex;
-                    justify-content: space-between;
-                    aling-item: left;
+                .receta {
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    text-align: center;
+                }
+                .image-container {
+                    width: 240px;
+                    height: 240px;
+                    margin-bottom: 20px;
+                }
+                @media (min-width: 768px) {
+                    .receta {
+                        flex-direction: row;
+                        text-align: left;
+                    }
+                    .image-container {
+                        margin-right: 20px;
+                    }
                 }
             `}
             </style>
         </>
-    )
+    );
 }
