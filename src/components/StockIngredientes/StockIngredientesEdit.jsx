@@ -21,7 +21,6 @@ export default function StockIngredientesEdit({ handleShow, datoRow }) {
   const [error, setError] = useState("");
   const [transition, setTransition] = useState(false);
   const [rubros, setRubros] = useState([]);
-  console.log(formData);
   useEffect(() => {
     handleCheck();
   }, [formData]);
