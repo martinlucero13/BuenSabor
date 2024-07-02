@@ -51,7 +51,7 @@ export default function NewNavBar({ setCambioContraseña }) {
               />
             </div>
           </section>
-          <section>
+          <section className="title-section">
             <h1
               width="50px"
               style={{ fontFamily: "Caveat, cursive" }}
@@ -85,6 +85,13 @@ export default function NewNavBar({ setCambioContraseña }) {
         </div>
       </nav>
       <style jsx>{`
+        .title-section {
+          display: flex;
+          flex: 1; /* Para ocupar todo el espacio restante */
+          justify-content: center;
+          align-items: center;
+        }
+
         h1 {
           color: white;
           font-weight: bold;
