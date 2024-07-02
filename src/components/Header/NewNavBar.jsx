@@ -49,11 +49,10 @@ export default function NewNavBar({ setCambioContraseña }) {
           </section>
           <section>
             <Image
-              id="respoimage"
+              className="respoimage"
               width={100}
               height={30}
-              src="/marcasheader.png"
-              alt="buensabor"
+              src="/marcasheader.jpg"
             />
             <h1
               width="50px"
@@ -63,11 +62,10 @@ export default function NewNavBar({ setCambioContraseña }) {
               EL BUEN SABOR
             </h1>
             <Image
-              id="responsive-image"
+              className="respoimage"
               width={100}
               height={30}
-              src="/marcasheader.png"
-              alt="buensabor"
+              src="/marcasheader.jpg"
             />
           </section>
           <article>
@@ -154,7 +152,7 @@ export default function NewNavBar({ setCambioContraseña }) {
           cursor: pointer;
         }
         @media screen and (max-width: 850px) {
-          #respoimage {
+          .respoimage {
             display: none;
           }
         }
