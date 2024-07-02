@@ -84,7 +84,8 @@ export default function StockProductosEdit({ handleShow, datoRow }) {
   }
 
   function handleCheck() {
-    if (Object.values(formData).includes("")) {
+    const values = Object.values(formData);
+    if (values.includes("") || values.some((value) => value < 0)) {
       setDisabledSend(true);
       return;
     }

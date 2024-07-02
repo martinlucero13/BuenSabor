@@ -3,7 +3,7 @@ import { useRouter } from "next/router";
 import DataTable from "react-data-table-component";
 import { ExpandedComponent, paginationOptions, noData } from './columns'
 import Loading from "../Loading/Loading";
-import apiFeco from "../../Services/apiServices";
+import api from "../../Services/apiServices";
 import UserContext from "../../context/userContext";
 import Cookies from "js-cookie";
 import { getDataFormat } from './Helpers'
@@ -30,7 +30,7 @@ export default function TablaPedidosCajero() {
     async function handleLoad() {
         setLoading(true)
         try {
-            const { data: pedidos } = await apiFeco.post('vinos/tomarPedidoCajero', { dateDesde: formData.dateDesde, dateHasta: formData.dateHasta })
+            const { data: pedidos } = await api.post('vinos/tomarPedidoCajero', { dateDesde: formData.dateDesde, dateHasta: formData.dateHasta })
             console.log(pedidos.data)
             const dataFormat = getDataFormat(pedidos.data)
             console.log(dataFormat)
@@ -45,7 +45,25 @@ export default function TablaPedidosCajero() {
     async function handlePago(row) {
         const idPedido = row.idPedido
         if (window.confirm('¿Desea marcar el pedido ' + idPedido + ' como pagado?')) {
-            const { data: pedidoPagado } = await apiFeco.post('vinos/pedidoPagado', { idPedido })
+            const { data: pedidoPagado } = await api.post('vinos/pedidoPagado', { idPedido })
+            handleLoad()
+        }
+    }
+
+    async function handleCambiarEstado(row) {
+        let res = ''
+        if (row.ESTADO === 0) {
+            res = 'confirmar'
+        } else if (row.ESTADO === 1) {
+            res = 'terminar'
+        }
+        try {
+            if (window.confirm('¿Desea ' + res + ' el pedido ' + row.idPedido + '?')) {
+                const { data: CambiarEstado } = await api.post('vinos/cambiarEstado', { idPedido: row.idPedido, estado: row.ESTADO })
+            }
+        } catch (error) {
+
+        } finally {
             handleLoad()
         }
     }
@@ -74,21 +92,18 @@ export default function TablaPedidosCajero() {
             selector: row => row.idPedido,
             center: true,
             grow: 0.5,
-            sortable: true
         },
         {
             name: 'N° Factura',
             selector: row => row.nrofac,
             center: true,
             grow: 0.5,
-            sortable: true
         },
         {
             name: 'Fecha Pedido ',
             selector: row => row.FECHA,
             center: true,
             grow: 0.5,
-            sortable: true,
             format: (row) => {
                 const fecha = dayjs(row.FECHA).format('DD/MM/YYYY')
                 return fecha
@@ -99,7 +114,6 @@ export default function TablaPedidosCajero() {
             selector: row => row.HORAFIN,
             center: true,
             grow: 0.5,
-            sortable: true
         },
         {
             name: 'Lugar Retiro',
@@ -147,7 +161,7 @@ export default function TablaPedidosCajero() {
                     return 'Pendiente'
                 }
                 if (row.ESTADO === 1) {
-                    return 'Confirmado/En Preparacion'
+                    return 'Confirmado'
                 }
                 if (row.ESTADO === 2) {
                     return 'Finalizado'
@@ -157,6 +171,44 @@ export default function TablaPedidosCajero() {
                 }
                 if (row.ESTADO === 4) {
                     return 'Entregado'
+                }
+            }
+        },
+        {
+            name: 'Acciones',
+            selector: row => row.PAGADO,
+            grow: 0.6,
+            center: true,
+            format: (row) => {
+                if (row.ESTADO === 0) {
+                    return (
+                        <>
+                            <div>
+                                <button onClick={() => handleCambiarEstado(row)}>
+                                    Confirmar
+                                </button>
+                            </div>
+                            <style jsx>{`
+                            button {
+                            margin: 5px;
+                            background-color: #E11919;
+                            color: white;
+                            border-radius: 20px;
+                            font-size: 15px;
+                            transition: 0.5s;
+                            padding: 10px 1px 10px 1px;
+                            border: none;
+                            min-width: 50px;
+                            text-transform:uppercase;
+                            }
+                            button:hover {
+                                color: black;
+                                background-color: #FF0000;
+                            }
+                        `}</style>
+                        </>)
+                } else {
+                    return null
                 }
             }
         },
@@ -177,7 +229,7 @@ export default function TablaPedidosCajero() {
         {
             name: 'Pago Por Caja',
             selector: row => row.PAGADO,
-            grow: 0.6,
+            grow: 0.4,
             center: true,
             format: (row) => {
                 if (row.PAGADO === 0 && row.FORMAPAGO === '1' && row.ESTADO !== 3) {
@@ -214,8 +266,6 @@ export default function TablaPedidosCajero() {
                     expandableRowsComponent={ExpandedComponent}
                     pagination
                     paginationComponentOptions={paginationOptions}
-                    //defaultSortFieldId={1}
-                    //defaultSortAsc={false}
                     progressPending={loading}
                     progressComponent={<Loading message='Cargando pedidos...' fontSize='20' />}
                 />

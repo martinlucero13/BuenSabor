@@ -26,9 +26,9 @@ export default function TablaPedidosDelivery() {
     const [open, setOpen] = useState(false)
     const [dataRow, setDataRow] = useState()
 
-    /*useEffect(async () => {
+    useEffect(async () => {
         handleLoad()
-    }, [])*/
+    }, [])
 
     async function handleLoad() {
         setLoading(true)
@@ -69,10 +69,10 @@ export default function TablaPedidosDelivery() {
     }, [formData])
     function handleCheck() {
 
-        if (formData.dateDesde === '' || formData.dateHasta === '') {
+        /*if (formData.dateDesde === '' || formData.dateHasta === '') {
             setDisabledSend(true)
             return
-        }
+        }*/
         setDisabledSend(false)
     }
 
@@ -81,15 +81,11 @@ export default function TablaPedidosDelivery() {
             name: 'N° Pedido',
             selector: row => row.idPedido,
             center: true,
-
-            sortable: true
         },
         {
             name: 'Fecha',
             selector: row => row.FECHA,
             center: true,
-
-            sortable: true,
             format: (row) => {
                 const fecha = dayjs(row.FECHA).format('DD/MM/YYYY')
                 return fecha
@@ -99,26 +95,22 @@ export default function TablaPedidosDelivery() {
             name: 'Nombre',
             selector: row => row.NOMBRE,
             center: true,
-            sortable: true
         },
         {
             name: 'Telefono',
             selector: row => row.TELEFONO,
             center: true,
-            sortable: true
         },
         {
             name: 'Domicilio',
             left: true,
             selector: row => row.DOMICILIO,
             center: true,
-            sortable: true
         },
         {
             name: 'Localidad',
             selector: row => row.LOCALIDAD,
             center: true,
-            sortable: true
         },
         {
             name: 'Importe Facturado',
@@ -240,13 +232,13 @@ export default function TablaPedidosDelivery() {
                 <div className="barraNav">
                     <header>
                         <h1>Pedidos Delivery</h1>
-                        <label>Desde</label>
+                        {/*<label>Desde</label>
                         <input onChange={handleChangeForm} value={formData.dateDesde} type="date" name="dateDesde" />
 
                         <label>Hasta</label>
-                        <input onChange={handleChangeForm} value={formData.dateHasta} type="date" name="dateHasta" />
+                        <input onChange={handleChangeForm} value={formData.dateHasta} type="date" name="dateHasta" />*/}
 
-                        <button onClick={handleLoad} disabled={disabledSend} className={disabledSend || loading ? 'button_disabled' : 'button'}>Buscar</button>
+                        <button onClick={handleLoad} disabled={disabledSend} className={disabledSend || loading ? 'button_disabled' : 'button'}>Actualizar</button>
                     </header>
                 </div>
                 <div className="divTable">
@@ -258,8 +250,6 @@ export default function TablaPedidosDelivery() {
                         expandableRowsComponent={ExpandedComponent}
                         pagination
                         paginationComponentOptions={paginationOptions}
-                        //defaultSortFieldId={1}
-                        //defaultSortAsc={false}
                         progressPending={loading}
                         progressComponent={<Loading message='Cargando pedidos...' fontSize='20' />}
                     />

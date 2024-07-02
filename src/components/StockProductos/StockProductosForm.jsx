@@ -88,10 +88,8 @@ export default function StockProductosForm({ handleShow }) {
   }
 
   function handleCheck() {
-    if (
-      Object.values(formData).includes("") ||
-      Object.values(formData).includes(0)
-    ) {
+    const values = Object.values(formData);
+    if (values.includes("") || values.some((value) => value < 0)) {
       setDisabledSend(true);
       return;
     }
