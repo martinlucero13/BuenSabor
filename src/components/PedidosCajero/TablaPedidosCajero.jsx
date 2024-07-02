@@ -31,7 +31,6 @@ export default function TablaPedidosCajero() {
         setLoading(true)
         try {
             const { data: pedidos } = await api.post('vinos/tomarPedidoCajero', { dateDesde: formData.dateDesde, dateHasta: formData.dateHasta })
-            console.log(pedidos.data)
             const dataFormat = getDataFormat(pedidos.data)
             console.log(dataFormat)
             setDataTable(dataFormat)
@@ -200,7 +199,7 @@ export default function TablaPedidosCajero() {
         {
             name: 'Acciones',
             selector: row => row.PAGADO,
-            grow: 0.5,
+            grow: 0.6,
             center: true,
             format: (row) => {
                 if (row.ESTADO === 0) {
@@ -380,7 +379,7 @@ export default function TablaPedidosCajero() {
                     button {
                       margin-top:12px; /* Añadido margen superior para evitar que los elementos estén demasiado juntos en pantallas pequeñas */
                       margin-bottom:12px; /* Añadido margen inferior para evitar que los elementos estén demasiado juntos en pantallas pequeñas */
-                      background-color: rgb(138, 13, 111);
+                      background-color: #E11919;
                       color: white;
                       border-radius:20px; 
                       font-size:17px; 

@@ -184,22 +184,23 @@ export default function TablaPedidosDelivery() {
                     <div onClick={() => handleDetalle(row)}>
                         <button>Domicilio</button>
                         <style jsx>{`
-                        button {
-                        margin: 10px;
-                        background-color: #E11919;
-                        color: white;
-                        border-radius: 20px;
-                        font-size: 15px;
-                        transition: 0.5s;
-                        padding: 10px 1px 10px 1px;
-                        border: none;
-                        width: 100px;
-                        text-transform:uppercase;
-                        }
-                        button:hover {
-                            color: black;
-                            background-color: #FF0000;
-                        }
+                            button {
+                                background-color: #E11919;
+                                color: white;
+                                border: none;
+                                border-radius: 10px;
+                                font-size: 14px;
+                                transition: 0.3s;
+                                padding: 5px 10px;
+                                cursor: pointer;
+                                display: inline-block;
+                                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); 
+                            }
+
+                            button:hover {
+                                color: black;
+                                background-color: #FF0000;
+                            }
                     `}</style>
                     </div>
                 );
@@ -261,11 +262,14 @@ export default function TablaPedidosDelivery() {
                     margin: 5px;
                     background-color: #E11919;
                     color: white;
-                    border-radius: 100%;
-                    font-size: 15px;
-                    transition: 0.5s;
-                    padding: 5px;
                     border: none;
+                    border-radius: 10px; 
+                    font-size: 14px; 
+                    transition: 0.3s;
+                    padding: 5px 10px;
+                    cursor: pointer;
+                    display: inline-block;
+                    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
                     width: 30px;
                     text-transform:uppercase;
                 }
