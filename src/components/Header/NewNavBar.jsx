@@ -48,8 +48,8 @@ export default function NewNavBar({ setCambioContraseña }) {
             />
           </section>
           <section>
-            {" "}
             <Image
+              id="respoimage"
               width={100}
               height={30}
               src="/marcasheader.png"
@@ -61,9 +61,9 @@ export default function NewNavBar({ setCambioContraseña }) {
               onClick={handleRedirect}
             >
               EL BUEN SABOR
-            </h1>{" "}
+            </h1>
             <Image
-              style={{ marginLeft: "4px" }}
+              id="responsive-image"
               width={100}
               height={30}
               src="/marcasheader.png"
@@ -98,6 +98,8 @@ export default function NewNavBar({ setCambioContraseña }) {
         h1 {
           color: white;
           font-weight: bold;
+          margin-left: 8px;
+          margin-right: 10px;
         }
         nav {
           display: flex;
@@ -151,7 +153,11 @@ export default function NewNavBar({ setCambioContraseña }) {
           background-color: #ff0000;
           cursor: pointer;
         }
-
+        @media screen and (max-width: 850px) {
+          #respoimage {
+            display: none;
+          }
+        }
         @media screen and (max-width: 575px) {
           ul {
             display: none;
