@@ -91,34 +91,46 @@ export default function TablaPedidosCajero() {
             name: 'N° Pedido',
             selector: row => row.idPedido,
             center: true,
-            grow: 0.5,
+            grow: 0.1,
         },
         {
             name: 'N° Factura',
             selector: row => row.nrofac,
             center: true,
-            grow: 0.5,
+            grow: 0.1,
         },
         {
             name: 'Fecha Pedido ',
             selector: row => row.FECHA,
             center: true,
-            grow: 0.5,
+            grow: 0.1,
             format: (row) => {
                 const fecha = dayjs(row.FECHA).format('DD/MM/YYYY')
                 return fecha
             }
         },
-        {
+        /*{
             name: 'Hora Fin',
             selector: row => row.HORAFIN,
             center: true,
             grow: 0.5,
+        },*/
+        {
+            name: 'Hora Fin',
+            selector: row => {
+                const horaCompleta = row.HORAFIN;
+                const horaSinSegundos = horaCompleta.substring(0, 5); // Obtener los primeros 5 caracteres (HH:mm)
+                return horaSinSegundos;
+            },
+            center: true,
+            grow: 0.1,
+            sortable: true
         },
         {
             name: 'Lugar Retiro',
             selector: row => row.RETIRO,
             center: true,
+            grow: 0.6,
             format: (row) => {
                 if (row.RETIRO === 1) {
                     return 'Retiro Por Sucursal'
@@ -132,7 +144,7 @@ export default function TablaPedidosCajero() {
             name: 'Forma de Pago',
             selector: row => row.FORMAPAGO,
             center: true,
-            grow: 0.6,
+            grow: 0.5,
             format: (row) => {
                 if (row.FORMAPAGO === '1') {
                     return 'Efectivo'
@@ -145,17 +157,28 @@ export default function TablaPedidosCajero() {
         {
             name: 'Importe Facturado',
             selector: row => row.TOTALPEDIDO,
-            right: true,
+            center: true,
+            grow: 0.6,
             format: (row) => {
                 const TOTALPEDIDO = (row.TOTALPEDIDO)
                 return '$' + TOTALPEDIDO.toFixed(2)
             }
         },
         {
+            name: "Descuento Aplicado",
+            selector: (row) => row.DESCUENTO,
+            center: true,
+            grow: 0.6,
+            format: (row) => {
+                const DESCUENTO = row.DESCUENTO;
+                return DESCUENTO != 0 ? "$" + DESCUENTO.toFixed(2) : "-";
+            },
+        },
+        {
             name: 'Estado',
             selector: row => row.ESTADO,
             center: true,
-            grow: 0.6,
+            grow: 0.5,
             format: (row) => {
                 if (row.ESTADO === 0) {
                     return 'Pendiente'
@@ -177,7 +200,7 @@ export default function TablaPedidosCajero() {
         {
             name: 'Acciones',
             selector: row => row.PAGADO,
-            grow: 0.6,
+            grow: 0.5,
             center: true,
             format: (row) => {
                 if (row.ESTADO === 0) {
@@ -189,22 +212,23 @@ export default function TablaPedidosCajero() {
                                 </button>
                             </div>
                             <style jsx>{`
-                            button {
-                            margin: 5px;
-                            background-color: #E11919;
-                            color: white;
-                            border-radius: 20px;
-                            font-size: 15px;
-                            transition: 0.5s;
-                            padding: 10px 1px 10px 1px;
-                            border: none;
-                            min-width: 50px;
-                            text-transform:uppercase;
-                            }
-                            button:hover {
-                                color: black;
-                                background-color: #FF0000;
-                            }
+                                button {
+                                    background-color: #E11919;
+                                    color: white;
+                                    border: none;
+                                    border-radius: 10px; /* Esquinas redondeadas */
+                                    font-size: 14px; /* Tamaño de fuente reducido */
+                                    transition: 0.3s;
+                                    padding: 5px 10px; /* Tamaño del botón reducido */
+                                    cursor: pointer;
+                                    display: inline-block;
+                                    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Sombra para más estética */
+                                }
+
+                                button:hover {
+                                    color: black;
+                                    background-color: #FF0000;
+                                }
                         `}</style>
                         </>)
                 } else {

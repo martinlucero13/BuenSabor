@@ -13,7 +13,7 @@ export const listPages = [
         title: "Menu",
         iconData: [
             {
-                link: "/eleccionMarcasVinos",
+                link: "/productos",
                 name: "Carta",
                 IconName: "ListUl"
             },
@@ -225,7 +225,7 @@ export const listPagesCliente = [
         title: "Menu",
         iconData: [
             {
-                link: "/eleccionMarcasVinos",
+                link: "/productos",
                 name: "Carta",
                 IconName: "ListUl"
             },
