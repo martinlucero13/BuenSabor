@@ -10,7 +10,7 @@ import Cookies from "js-cookie";
 //import { marcas } from '../src/data'
 import api from "../src/Services/apiServices";
 
-export default function EleccionMarcaVino() {
+export default function Productos() {
   const { marca, setMarca, setRetiro, retiro } = useContext(UtilityContext);
   const { checkSession } = useUser();
   const { user } = useContext(UserContext);
@@ -70,7 +70,7 @@ export default function EleccionMarcaVino() {
 
   return (
     <>
-      <Modal
+      {/*<Modal
         show={open}
         aria-labelledby="contained-modal-title-vcenter"
         centered
@@ -94,7 +94,7 @@ export default function EleccionMarcaVino() {
             </button>
           </div>
         </Modal.Body>
-      </Modal>
+      </Modal>*/}
       {marca ? <Vinos marcas={marcas} /> : <Marcas marcas={marcas} />}
       <style jsx>{`
         div {
