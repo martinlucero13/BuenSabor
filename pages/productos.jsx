@@ -28,6 +28,9 @@ export default function Productos() {
     if (user?.USMARCA1 === null) {
       navigate.push("/home");
     }
+    if (user?.USROL != 1) {
+      navigate.push("/home");
+    }
   }, [user]);
 
   useEffect(() => {

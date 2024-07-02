@@ -13,6 +13,9 @@ export default function PedidosDelivery() {
         if (user?.USMARCA1 === null) {
             navigate.push('/home')
         }
+        if (user?.USROL != 3) {
+            navigate.push("/home");
+        }
     }, [user])
 
     useEffect(() => {

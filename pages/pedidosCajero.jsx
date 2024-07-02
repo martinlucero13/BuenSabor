@@ -13,6 +13,9 @@ export default function PedidosCajero() {
         if (user?.USMARCA1 === null) {
             navigate.push('/home')
         }
+        if (user?.USROL != 2) {
+            navigate.push("/home");
+        }
     }, [user])
 
     useEffect(() => {

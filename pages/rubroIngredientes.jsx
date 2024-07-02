@@ -13,6 +13,9 @@ export default function RubroIngredientes() {
         if (user?.USMARCA1 === null) {
             navigate.push('/home')
         }
+        if (user?.USROL == 1 || user?.USROL == 2 || user?.USROL == 3) {
+            navigate.push("/home");
+        }
     }, [user])
 
     useEffect(() => {

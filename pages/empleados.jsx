@@ -13,6 +13,9 @@ export default function Empleados() {
         if (user?.USMARCA1 === null) {
             navigate.push('/home')
         }
+        if (user?.USROL != 5) {
+            navigate.push("/home");
+        }
     }, [user])
 
     useEffect(() => {
