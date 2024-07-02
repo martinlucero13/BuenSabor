@@ -48,7 +48,27 @@ export default function NewNavBar({ setCambioContraseña }) {
             />
           </section>
           <section>
-            <h1 width="50px">EL BUEN SABOR</h1>
+            <Image
+              id="respoimage"
+              width={100}
+              height={30}
+              src="/marcasheader.png"
+              alt="buensabor"
+            />
+            <h1
+              width="50px"
+              style={{ fontFamily: "Caveat, cursive" }}
+              onClick={handleRedirect}
+            >
+              EL BUEN SABOR
+            </h1>
+            <Image
+              id="responsive-image"
+              width={100}
+              height={30}
+              src="/marcasheader.png"
+              alt="buensabor"
+            />
           </section>
           <article>
             {user.USROL === "1" && (
