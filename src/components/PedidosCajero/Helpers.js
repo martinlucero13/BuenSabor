@@ -18,6 +18,7 @@ export function getDataFormat(dataTable) {
             HORAFIN: data.horaEstimadaFin,
             RETIRO: data.tipoEnvio,
             TOTALPEDIDO: data.totalCosto,
+            DESCUENTO: data.montoDescuento,
             FORMAPAGO: data.formaPago,
             ESTADO: data.estado,
             PAGADO: data.pagado,
