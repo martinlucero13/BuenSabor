@@ -5,15 +5,21 @@ import Pedido from "./Pedido";
 
 export default function ListadoPedidos() {
   const { articulos, setArticulos } = useContext(CompraContext);
+
   function deleteArticulo(id) {
     setArticulos(articulos.filter((articulo) => articulo.id !== id));
   }
 
-  function modificarCantidad(id, cantidadExtra, cantidadDisponible) {
+  function modificarCantidad(
+    id,
+    cantidadAux,
+    cantidadExtra,
+    cantidadDisponible
+  ) {
     const articuloActualizado = articulos.map((articulo) => {
       let cantidad = 0;
       if (articulo.id === id) {
-        const nuevaCantidad = articulo.cantidad + cantidadExtra;
+        const nuevaCantidad = cantidadAux + cantidadExtra;
         if (nuevaCantidad < 1) {
           cantidad = 1;
         } else if (nuevaCantidad > articulo.disponible) {
@@ -22,7 +28,7 @@ export default function ListadoPedidos() {
           if (nuevaCantidad <= cantidadDisponible) {
             cantidad = nuevaCantidad;
           } else {
-            cantidad = articulo.cantidad;
+            cantidad = cantidadAux;
           }
         }
         return {

@@ -11,6 +11,9 @@
   font-style: normal;
 }
 
+p,h1,h2,h3,h4{
+  font-family: 'fuenteRegular';
+}
 
 html,
 body {

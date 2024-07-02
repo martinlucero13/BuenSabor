@@ -50,7 +50,10 @@ export const TablaPedidos = ({ setPrint }) => {
               quantity: 1,
             },
           ],
-
+          payment_methods: {
+            excluded_payment_methods: [{ id: "visa" }],
+            excluded_payment_types: [{ id: "atm" }],
+          },
           back_urls: {
             success: `http://localhost:4000/mercadoRedirect?idPedido=${idPedido}`,
             failure: `http://localhost:4000/mercadoRedirect?idPedido=${idPedido}`,

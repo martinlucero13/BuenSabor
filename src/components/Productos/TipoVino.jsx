@@ -3,7 +3,8 @@ import Image from "next/image";
 import CompraContext from "../../Context/pedidoContext";
 import Alert from "./Alert";
 import UtilityContext from "../../Context/utilityContext";
-import { Modal, Button } from "react-bootstrap";
+import { Modal, Button, Card } from "react-bootstrap";
+import apiFeco from "../../Services/apiServices";
 
 export default function TipoVino({ vino, filter, precioOrden, setOpen }) {
   const { articulos, setArticulos } = useContext(CompraContext);
@@ -15,6 +16,27 @@ export default function TipoVino({ vino, filter, precioOrden, setOpen }) {
   const [openModal, setOpenModal] = useState(false);
   const [descripcionVino, setDescripcionVino] = useState("");
   const [denominacionVino, setDenominacionVino] = useState("");
+  console.log(vino);
+
+  async function handleLoad() {
+    try {
+      const { data: getCantidadDisponible } = await apiFeco.post(
+        "stockProductos/getCantidadDisponibleProducto",
+        { idArticuloManufacturado: vino.idArticuloManufacturado }
+      );
+
+      setDisabledAdd(
+        getCantidadDisponible.data.cantidadDisponible > 0 ? false : true
+      );
+      console.log(getCantidadDisponible.data.cantidadDisponible);
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  useEffect(() => {
+    handleLoad();
+  }, []);
 
   useEffect(() => {
     if (cantidad < 1) {
@@ -31,6 +53,9 @@ export default function TipoVino({ vino, filter, precioOrden, setOpen }) {
 
   function handleVerifiy(e) {
     e.preventDefault();
+    if (disabledAdd == true) {
+      return;
+    }
     if (articulos.length === 0) {
       handleAdd();
       return;
@@ -95,35 +120,35 @@ export default function TipoVino({ vino, filter, precioOrden, setOpen }) {
     <>
       <Modal
         show={openModal}
+        onHide={() => handleModal(false, "", "")}
         aria-labelledby="contained-modal-title-vcenter"
         centered
       >
         <Modal.Body style={{ alignItems: "center" }}>
-          <>
-            <Image
-              src={url}
-              alt=""
-              style={{
+          {" "}
+          <Card.Img
+            variant="top"
+            src={url}
+            alt=""
+            /*style={{
                 textAlign: "-webkit-center",
                 borderRadius: "20px",
                 marginTop: "2px",
                 cursor: "pointer",
-              }}
-              //onError={handleError}
-              width={220}
-              height={230}
-            />
-            <h3>{denominacionVino}</h3>
-            <h4>Tiempo Promedio: {vino.tiempoEstimadoCocina}</h4>
-            <h4>{descripcionVino}</h4>
-            <p>{vino.receta}</p>
-            <Button
-              onClick={() => handleModal(false, "", "")}
-              style={{ backgroundColor: "#E11919" }}
-            >
-              Cerrar
-            </Button>
-          </>
+              }}*/
+            //onError={handleError}
+            /*width={220}
+              height={230}*/
+          />
+          <h2>{vino.denominacion}</h2>
+          <h4>${vino.precioVenta} ARS</h4>
+          <p style={{ color: "rgb(88, 80, 101)" }}>{descripcionVino}</p>
+          {/*<Button
+            onClick={() => handleModal(false, "", "")}
+            style={{ backgroundColor: "#E11919" }}
+          >
+            Cerrar
+            </Button>*/}
         </Modal.Body>
       </Modal>
       {
@@ -159,15 +184,31 @@ export default function TipoVino({ vino, filter, precioOrden, setOpen }) {
             </article>
             <strong>{vino.precioVenta} ARS</strong>
             <div>
-              <div onClick={() => setCantidad(cantidad - 1)}>-</div>
+              <div
+                onClick={() =>
+                  disabledAdd == false ? setCantidad(cantidad - 1) : null
+                }
+              >
+                -
+              </div>
               <p>{cantidad}</p>
-              <div onClick={() => setCantidad(cantidad + 1)}>+</div>
+              <div
+                onClick={
+                  disabledAdd == false
+                    ? cantidad < 20
+                      ? () => setCantidad(cantidad + 1)
+                      : null
+                    : null
+                }
+              >
+                +
+              </div>
             </div>
             <button
               className={disabledAdd ? "disabledButton" : "buttonAdd"}
               disabled={disabledAdd}
             >
-              Agregar
+              {disabledAdd ? "No disponible" : "Agregar"}
             </button>
           </form>
           <Alert show={show} setShow={setShow} />

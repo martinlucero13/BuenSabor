@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Trash } from "react-bootstrap-icons";
 import apiFeco from "../../Services/apiServices";
+import { useContext } from "react";
 
 export default function Pedido({
   articulo,
@@ -16,15 +17,16 @@ export default function Pedido({
   async function handleLoad() {
     setLoading(true);
     try {
-      console.log(articulo);
-
       const { data: getCantidadDisponible } = await apiFeco.post(
         "stockProductos/getCantidadDisponibleProducto",
         { idArticuloManufacturado: articulo.idArticuloManufacturado }
       );
       setCantidadDisponible(getCantidadDisponible.data.cantidadDisponible);
-      console.log(getCantidadDisponible.data.cantidadDisponible);
-
+      setCantidad(
+        cantidadDisponible < articulo.cantidad
+          ? cantidadDisponible
+          : articulo.cantidad
+      );
       setLoading(false);
     } catch (error) {
       console.error(error);
@@ -34,9 +36,15 @@ export default function Pedido({
 
   useEffect(() => {
     handleLoad();
+  }, []);
 
-    setCantidad(articulo.cantidad);
-  }, [articulo]);
+  useEffect(() => {
+    setCantidad(
+      cantidadDisponible < articulo.cantidad
+        ? cantidadDisponible
+        : articulo.cantidad
+    );
+  }, [articulo, cantidadDisponible]);
 
   return (
     <>
@@ -64,7 +72,7 @@ export default function Pedido({
           <div className="subtotal">
             <button
               onClick={() =>
-                modificarCantidad(articulo.id, -1, cantidadDisponible)
+                modificarCantidad(articulo.id, cantidad, -1, cantidadDisponible)
               }
             >
               -
@@ -72,7 +80,7 @@ export default function Pedido({
             <p>{cantidad}</p>
             <button
               onClick={() =>
-                modificarCantidad(articulo.id, 1, cantidadDisponible)
+                modificarCantidad(articulo.id, cantidad, 1, cantidadDisponible)
               }
             >
               +

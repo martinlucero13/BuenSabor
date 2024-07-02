@@ -1,6 +1,8 @@
 import { useEffect, useState, useRef } from "react";
 import { useHistory, useRouter } from "next/router";
 import api from "../src/Services/apiServices";
+import Image from "next/image";
+import { Button } from "react-bootstrap";
 
 export default function MercadoRedirect() {
   const [paymentDetails, setPaymentDetails] = useState(null);
@@ -15,7 +17,6 @@ export default function MercadoRedirect() {
     if (hasSubmitted.current) return; // Prevent double submission
     hasSubmitted.current = true; // Mark as submitted
 
-    console.log(paymentDetails);
     try {
       //Guardar Datos de mercado pago
       const { data: createMercadoPagoDatos } = await api.post(
@@ -47,15 +48,15 @@ export default function MercadoRedirect() {
 
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
+
     if (urlParams.size != 0) {
       setUrlParams(urlParams);
     }
     window.history.pushState({}, document.title, window.location.pathname);
     const paymentId = urlParams.get("payment_id");
     const idPedido = urlParams.get("idPedido");
-
-    console.log(paymentId);
-    if (paymentId) {
+    window.history.replaceState(null, "", "pedidos");
+    if (paymentId != null) {
       fetch(`https://api.mercadopago.com/v1/payments/${paymentId}`, {
         headers: {
           Authorization: `Bearer TEST-3978001185920550-051420-300fa742a1c5302f9cfc57811891f3d0-1813914850`, // Replace with your access token
@@ -63,9 +64,6 @@ export default function MercadoRedirect() {
       })
         .then((response) => response.json())
         .then((data) => {
-          console.log(data);
-          console.log(idPedido);
-
           const paymentDateCreated = data.date_created;
           const paymentDateApproved = data.date_approved;
 
@@ -109,7 +107,6 @@ export default function MercadoRedirect() {
             estado: statusTranslation[paymentStatus] || paymentStatus,
             idPedido: parseInt(idPedido),
           };
-          console.log(paymentDetails);
           setPaymentDetails(paymentDetails);
           handleSubmit(paymentDetails); // Ensure this is called only once
 
@@ -118,6 +115,8 @@ export default function MercadoRedirect() {
         })
         .catch((error) => {
           console.error("Error fetching payment details:", error);
+          setError(true);
+          setFinish(true);
         });
     } else {
       setError(true);
@@ -128,6 +127,14 @@ export default function MercadoRedirect() {
   return (
     <>
       <div>
+        <br></br>
+        <Image
+          src={"/mercado-pago.png"}
+          alt="Pagar con Mercado Pago"
+          width={120}
+          height={100}
+          style={{ marginRight: "10px" }}
+        />
         {urlParams == null ? (
           <h1>No hubo pedidos...</h1>
         ) : (
@@ -147,9 +154,17 @@ export default function MercadoRedirect() {
                     <h1>Su pedido sigue pendiente de pago</h1>
                   </>
                 )}
-                <button onClick={() => navigate.push("/pedidos")}>
+                <br />
+                <br />
+
+                <Button
+                  style={{ fontSize: "30px" }}
+                  variant="danger"
+                  size="lg"
+                  onClick={() => navigate.push("/pedidos")}
+                >
                   Ver Pedido
-                </button>
+                </Button>
               </>
             )}
           </>
@@ -170,7 +185,6 @@ export default function MercadoRedirect() {
             padding: 0;
           }
           h1 {
-            color: rgb(138, 13, 111);
             font-size: 60px;
           }
           @media and (max-width: 875px) {

@@ -33,8 +33,8 @@ export default function ResumenPedido() {
   const [transition, setTransition] = useState(false);
   const [formData, setFormData] = useState(INITIAL_STATE);
   const [showConfirm, setShowConfirm] = useState(false);
-  const [cerrado, setCerrado] = useState(true);
-
+  //const [cerrado, setCerrado] = useState(true);
+  const [cerrado, setCerrado] = useState(false);
   const navigate = useRouter();
 
   function handleChangeForm(event) {
@@ -84,9 +84,7 @@ export default function ResumenPedido() {
           idUsuario: user.USNROLEG,
         }
       );
-      console.log(getDomicilio.data[0]);
       setFormData(getDomicilio.data[0]);
-      console.log(formData);
 
       setLoading(false);
     } catch (error) {
@@ -129,7 +127,7 @@ export default function ResumenPedido() {
 
   useEffect(async () => {
     handleLoad();
-    tomarHorario();
+    //tomarHorario();
   }, []);
 
   useEffect(() => {
@@ -180,7 +178,7 @@ export default function ResumenPedido() {
         formaPago: 1,
         fecha,
         hora,
-        domicilio: retiro.retiro === "2" ? formData.idDomicilio : null,
+        //domicilio: retiro.retiro === "2" ? formData.idDomicilio : null,
       };
     });
     /* console.log(dataPedido) */
@@ -249,16 +247,6 @@ export default function ResumenPedido() {
 
       setLoading(true);
       setOpen(true);
-      if (retiro.retiro === "2") {
-        const { data: saveReintegrate } = await api.post(
-          "clientes/editDomicilio",
-          { fromData: dataToSend }
-        );
-      }
-      if (saveReintegrate.statusCode !== 200) {
-        alert("Algo fallo en el cambio de domicilio");
-        return;
-      }
       const dataPedidoRegalo = [...articulos];
       const legajo = String(user.USNROLEG);
       const hora = dayjs().format("HHmmss");
@@ -276,7 +264,10 @@ export default function ResumenPedido() {
           totalNETO: Number(totalNETO - descuento),
           formaPago: 2,
           legajo: legajo,
-          domicilio: retiro.retiro === "2" ? formData.idDomicilio : null,
+          //domicilio: retiro.retiro === "2" ? formData.idDomicilio : null,
+          calle: formData.calle,
+          numero: formData.numero,
+          localidad: formData.localidad,
           fecha,
           hora,
         };
@@ -296,6 +287,7 @@ export default function ResumenPedido() {
         }
         //setLoading(false);
       } catch (error) {
+        console.log(error);
         console.error(error);
         alert("Error al realizar su pedido, intente de nuevo en unos minutos");
         setOpen(false);
@@ -304,19 +296,19 @@ export default function ResumenPedido() {
       }
       const { data: data } = await apiFeco.post("vinos/ultimoPedido", {});
       var idPedido = data.data[0].idPedido;
-      console.log(idPedido);
+      //console.log(idPedido);
       const preferenceData = {
         items: [
           {
-            title: "Mi Pedido",
+            title: "Pedido #" + idPedido,
             unit_price: parseFloat((totalNETO - descuento).toFixed(2)),
             quantity: 1,
           },
         ],
-        /*payment_methods: {
-        excluded_payment_methods: [{ id: "visa" }],
-        excluded_payment_types: [{ id: "atm" }],
-      },*/
+        payment_methods: {
+          excluded_payment_methods: [{ id: "visa" }],
+          excluded_payment_types: [{ id: "atm" }],
+        },
         back_urls: {
           success: `http://localhost:4000/mercadoRedirect?idPedido=${idPedido}`,
           failure: `http://localhost:4000/mercadoRedirect?idPedido=${idPedido}`,
@@ -412,6 +404,11 @@ export default function ResumenPedido() {
                     value={formData.calle}
                     type="text"
                     name="calle"
+                    onInput={(event) => {
+                      if (event.target.value.length > 50) {
+                        event.target.value = event.target.value.slice(0, 50);
+                      }
+                    }}
                   />
                 </section>
                 <section className={transition ? "element-hidden" : "element"}>
@@ -419,12 +416,23 @@ export default function ResumenPedido() {
                   <input
                     required
                     placeholder="n° calle"
-                    maxLength={200}
+                    maxLength={1}
                     onChange={handleChangeForm}
                     value={formData.numero}
                     type="number"
+                    max={10000}
                     min={1}
                     name="numero"
+                    onKeyPress={(event) => {
+                      if (!/[0-9]/.test(event.key)) {
+                        event.preventDefault();
+                      }
+                    }}
+                    onInput={(event) => {
+                      if (event.target.value.length > 10) {
+                        event.target.value = event.target.value.slice(0, 10);
+                      }
+                    }}
                   />
                 </section>
                 <section className={transition ? "element-hidden" : "element"}>
@@ -437,6 +445,11 @@ export default function ResumenPedido() {
                     value={formData.localidad}
                     type="text"
                     name="localidad"
+                    onInput={(event) => {
+                      if (event.target.value.length > 50) {
+                        event.target.value = event.target.value.slice(0, 50);
+                      }
+                    }}
                   />
                 </section>
               </>
