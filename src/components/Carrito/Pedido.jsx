@@ -64,6 +64,7 @@ export default function Pedido({
           {/*<p>disponible: {Math.trunc(articulo.disponible)} unidades</p>*/}
         </article>
         <div
+          className="separador"
           style={{
             display: "inline",
             marginRight: "10%",
@@ -225,6 +226,9 @@ export default function Pedido({
           main img {
             width: 80px;
             height: 30%;
+          }
+          .separador {
+            margin: 0% !important;
           }
         }
       `}</style>
