@@ -124,6 +124,8 @@ export default function TipoVino({ vino, filter, precioOrden, setOpen }) {
         aria-labelledby="contained-modal-title-vcenter"
         centered
       >
+        {" "}
+        <Modal.Header closeButton></Modal.Header>
         <Modal.Body style={{ alignItems: "center" }}>
           {" "}
           <Card.Img

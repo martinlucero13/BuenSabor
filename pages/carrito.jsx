@@ -7,6 +7,7 @@ import UserContext from "../src/context/userContext";
 import { useRouter } from "next/router";
 import CarritoSinProductos from "../src/components/Carrito/CarritoSinProductos";
 import { Button } from "react-bootstrap";
+import Image from "next/image";
 
 export default function Carrito() {
   const { user } = useContext(UserContext);
@@ -42,7 +43,7 @@ export default function Carrito() {
             <article>
               <ResumenPedido />
             </article>
-          </main>
+          </main>{" "}
         </>
       ) : (
         <main>
@@ -73,6 +74,14 @@ export default function Carrito() {
           flex-direction: column;
           margin: 10px;
           margin-top: 20px;
+        }
+
+        .respoimage {
+          position: fixed;
+          bottom: 0;
+          left: 0;
+          width: 100%;
+          z-index: -1;
         }
 
         @media screen (max-width: 1100px) {

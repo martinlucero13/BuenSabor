@@ -9,6 +9,7 @@ import { Modal } from "react-bootstrap";
 import Cookies from "js-cookie";
 //import { marcas } from '../src/data'
 import api from "../src/Services/apiServices";
+import Image from "next/image";
 
 export default function Productos() {
   const { marca, setMarca, setRetiro, retiro } = useContext(UtilityContext);
@@ -96,6 +97,14 @@ export default function Productos() {
         </Modal.Body>
       </Modal>*/}
       {marca ? <Vinos marcas={marcas} /> : <Marcas marcas={marcas} />}
+      <div className="chef" style={{ textAlign: "center", flex: 1 }}>
+        <Image
+          src={"/fraseproductos.png"}
+          alt="..."
+          width={700}
+          height={200}
+        ></Image>
+      </div>
       <style jsx>{`
         div {
           display: flex;

@@ -74,8 +74,8 @@ export default function Home() {
             }}
             src={"/Carta.png"}
             alt="..."
-            width={300}
-            height={300}
+            width={200}
+            height={250}
           ></Image>{" "}
           <h1
             style={{
