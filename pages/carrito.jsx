@@ -97,6 +97,7 @@ export default function Carrito() {
         @media screen (max-width: 800px) {
           main div {
             justify-content: center;
+            align-items: center;
           }
         }
       `}</style>
