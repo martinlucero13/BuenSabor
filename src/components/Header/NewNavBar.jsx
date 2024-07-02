@@ -52,13 +52,26 @@ export default function NewNavBar({ setCambioContraseña }) {
             </div>
           </section>
           <section className="title-section">
+            {" "}
+            <Image
+              className="respoimage"
+              width={100}
+              height={30}
+              src="/marcasheader.jpg"
+            />
             <h1
               width="50px"
               style={{ fontFamily: "Caveat, cursive" }}
               onClick={handleRedirect}
             >
               EL BUEN SABOR
-            </h1>
+            </h1>{" "}
+            <Image
+              className="respoimage"
+              width={100}
+              height={30}
+              src="/marcasheader.jpg"
+            />
           </section>
           <article>
             {user.USROL === "1" && (
@@ -149,6 +162,11 @@ export default function NewNavBar({ setCambioContraseña }) {
           color: black;
           background-color: #ff0000;
           cursor: pointer;
+        }
+        @media screen and (max-width: 850px) {
+          .respoimage {
+            display: none;
+          }
         }
         @media screen and (max-width: 575px) {
           ul {

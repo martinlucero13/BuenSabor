@@ -62,10 +62,10 @@ export default function Home() {
             onClick={handleRedirect}
             style={{
               marginLeft: "0px",
-              width: "300px",
-              height: "300px",
+              width: "280px",
+              height: "280px",
               transform: isHovered
-                ? "translateY(-10px) scale(1.00)"
+                ? "translateY(-2px) scale(1.00)"
                 : "translateY(0) scale(1)",
               filter: isHovered ? "brightness(1.2)" : "brightness(1)",
 
@@ -75,7 +75,7 @@ export default function Home() {
             src={"/Carta.png"}
             alt="..."
             width={200}
-            height={250}
+            height={240}
           ></Image>{" "}
           <h1
             style={{
