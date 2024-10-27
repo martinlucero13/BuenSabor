@@ -168,12 +168,8 @@ export default function StockProductosFormIngredientes({
               type="number"
               name="cantidad"
               style={{ textAlign: "right" }}
-              min={1}
-              onKeyPress={(event) => {
-                if (!/[0-9]/.test(event.key)) {
-                  event.preventDefault();
-                }
-              }}
+              min={0}
+
               onInput={(event) => {
                 if (event.target.value.length > 7) {
                   event.target.value = event.target.value.slice(0, 7);

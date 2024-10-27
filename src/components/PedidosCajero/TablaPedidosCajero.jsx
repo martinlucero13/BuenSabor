@@ -67,6 +67,18 @@ export default function TablaPedidosCajero() {
         }
     }
 
+    async function handleCambiarCancelaPedido(row) {
+        try {
+            if (window.confirm('¿Desea el anular ' + row.idPedido + '?')) {
+                const { data: CambiarEstado } = await api.post('vinos/CambiarCancelaPedido', { idPedido: row.idPedido })
+            }
+        } catch (error) {
+
+        } finally {
+            handleLoad()
+        }
+    }
+
     function handleChangeForm(event) {
         const { name, value } = event.target;
         let newFormData;
@@ -208,6 +220,34 @@ export default function TablaPedidosCajero() {
                             <div>
                                 <button onClick={() => handleCambiarEstado(row)}>
                                     Confirmar
+                                </button>
+                            </div>
+                            <style jsx>{`
+                                button {
+                                    background-color: #E11919;
+                                    color: white;
+                                    border: none;
+                                    border-radius: 10px; /* Esquinas redondeadas */
+                                    font-size: 14px; /* Tamaño de fuente reducido */
+                                    transition: 0.3s;
+                                    padding: 5px 10px; /* Tamaño del botón reducido */
+                                    cursor: pointer;
+                                    display: inline-block;
+                                    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Sombra para más estética */
+                                }
+
+                                button:hover {
+                                    color: black;
+                                    background-color: #FF0000;
+                                }
+                        `}</style>
+                        </>)
+                } else if (row.ESTADO === 1) {
+                    return (
+                        <>
+                            <div>
+                                <button onClick={() => handleCambiarCancelaPedido(row)}>
+                                    Anular
                                 </button>
                             </div>
                             <style jsx>{`
